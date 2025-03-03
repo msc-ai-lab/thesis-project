@@ -5,27 +5,25 @@ __pycache__/
 venv/
 env/
 
-# Ignore Jupyter Notebook checkpoints
-notebooks/.ipynb_checkpoints/
+# Ignore Jupyter Notebook checkpoints (but keep actual notebooks)
+notebooks/**/.ipynb_checkpoints/
+notebooks/**/.nbconvert.ipynb
 
-# Ignore datasets (optional – remove if you want to version control them)
-datasets/
-datasets/*.csv
-datasets/*.json
+# Ignore datasets (but allow small CSV/JSON files if needed)
 datasets/*.h5
-datasets/*.pickle
 datasets/*.zip
+datasets/*.pickle
+datasets/*.tar.gz
+datasets/*.npz
+datasets/*.pkl
 
-# Ignore reports and large output files
+# Ignore reports and exported images
 reports/*.pdf
 reports/*.docx
 reports/*.pptx
 reports/*.png
 reports/*.jpg
-
-# Ignore compiled Jupyter Notebook outputs
-*.nbconvert.ipynb
-notebooks/*.nbconvert.ipynb
+reports/*.svg
 
 # Ignore logs and debug files
 logs/
@@ -33,7 +31,7 @@ logs/
 *.out
 *.err
 
-# Ignore model checkpoints and large files
+# Ignore compiled machine learning model files
 *.h5
 *.hdf5
 *.onnx
@@ -44,19 +42,26 @@ logs/
 *.pkl
 checkpoints/
 models/
+models/**/*
+artifacts/
+artifacts/**/*
 
-# Ignore configuration and credentials (be careful!)
-config.yaml
-secrets.json
-.env
+# Ignore configuration and secrets
+config.yaml*
+secrets.*
+.env*
 
 # Ignore dependency caches
 pip-log.txt
 pip-delete-this-directory.txt
 
-# Ignore VS Code settings (if using VS Code)
+# Ignore VS Code settings
 .vscode/
 *.code-workspace
+
+# Ignore auto-generated Python files
+*.pyo
+*.pyd
 
 # Ignore MacOS & Linux system files
 .DS_Store
