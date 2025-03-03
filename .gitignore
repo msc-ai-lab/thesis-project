@@ -1,0 +1,63 @@
+# Ignore Python cache and virtual environments
+__pycache__/
+*.py[cod]
+*.so
+venv/
+env/
+
+# Ignore Jupyter Notebook checkpoints
+notebooks/.ipynb_checkpoints/
+
+# Ignore datasets (optional – remove if you want to version control them)
+datasets/
+datasets/*.csv
+datasets/*.json
+datasets/*.h5
+datasets/*.pickle
+datasets/*.zip
+
+# Ignore reports and large output files
+reports/*.pdf
+reports/*.docx
+reports/*.pptx
+reports/*.png
+reports/*.jpg
+
+# Ignore compiled Jupyter Notebook outputs
+*.nbconvert.ipynb
+notebooks/*.nbconvert.ipynb
+
+# Ignore logs and debug files
+logs/
+*.log
+*.out
+*.err
+
+# Ignore model checkpoints and large files
+*.h5
+*.hdf5
+*.onnx
+*.pth
+*.pt
+*.tflite
+*.joblib
+*.pkl
+checkpoints/
+models/
+
+# Ignore configuration and credentials (be careful!)
+config.yaml
+secrets.json
+.env
+
+# Ignore dependency caches
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Ignore VS Code settings (if using VS Code)
+.vscode/
+*.code-workspace
+
+# Ignore MacOS & Linux system files
+.DS_Store
+*.swp
