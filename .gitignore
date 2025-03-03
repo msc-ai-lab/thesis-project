@@ -17,6 +17,21 @@ datasets/*.tar.gz
 datasets/*.npz
 datasets/*.pkl
 
+# Ignore compiled Python files
+src/**/*.pyc
+src/**/*.pyo
+src/**/*.pyd
+src/**/__pycache__/
+
+# Ignore temporary or backup files
+src/**/.DS_Store
+src/**/.vscode/
+src/**/.mypy_cache/
+src/**/.pytest_cache/
+
+# Ignore Jupyter Notebook checkpoints inside src/
+src/**/.ipynb_checkpoints/
+
 # Ignore reports and exported images
 reports/*.pdf
 reports/*.docx
