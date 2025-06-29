@@ -1,6 +1,3 @@
-# Ignore data
-data/
-
 # Ignore Python cache and virtual environments
 __pycache__/
 *.py[cod]
@@ -19,6 +16,8 @@ datasets/*.pickle
 datasets/*.tar.gz
 datasets/*.npz
 datasets/*.pkl
+data/raw_dataset/*
+data/processed_dataset/*
 
 # Ignore compiled Python files
 src/**/*.pyc
@@ -53,21 +52,19 @@ logs/
 *.h5
 *.hdf5
 *.onnx
-*.pth
 *.pt
 *.tflite
 *.joblib
 *.pkl
 checkpoints/
-models/
-models/**/*
+models/*
 artifacts/
 artifacts/**/*
 
 # Ignore configuration and secrets
 config.yaml*
 secrets.*
-.env*
+.env
 
 # Ignore dependency caches
 pip-log.txt
@@ -84,3 +81,6 @@ pip-delete-this-directory.txt
 # Ignore MacOS & Linux system files
 .DS_Store
 *.swp
+
+# Wandb files
+notebooks/wandb
