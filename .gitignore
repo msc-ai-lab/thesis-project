@@ -87,3 +87,6 @@ data/raw_dataset/
 
 # Wandb files
 notebooks/wandb
+
+# Ignore XAI checkpoints
+results/**/.ipynb_checkpoints/
