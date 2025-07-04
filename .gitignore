@@ -82,5 +82,8 @@ pip-delete-this-directory.txt
 .DS_Store
 *.swp
 
+# Ignore data files
+data/raw_dataset/
+
 # Wandb files
 notebooks/wandb
