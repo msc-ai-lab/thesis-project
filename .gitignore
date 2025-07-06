@@ -1,0 +1,92 @@
+# Ignore Python cache and virtual environments
+__pycache__/
+*.py[cod]
+*.so
+venv/
+env/
+
+# Ignore Jupyter Notebook checkpoints (but keep actual notebooks)
+notebooks/**/.ipynb_checkpoints/
+notebooks/**/.nbconvert.ipynb
+
+# Ignore datasets (but allow small CSV/JSON files if needed)
+datasets/*.h5
+datasets/*.zip
+datasets/*.pickle
+datasets/*.tar.gz
+datasets/*.npz
+datasets/*.pkl
+data/raw_dataset/*
+data/processed_dataset/*
+
+# Ignore compiled Python files
+src/**/*.pyc
+src/**/*.pyo
+src/**/*.pyd
+src/**/__pycache__/
+
+# Ignore temporary or backup files
+src/**/.DS_Store
+src/**/.vscode/
+src/**/.mypy_cache/
+src/**/.pytest_cache/
+
+# Ignore Jupyter Notebook checkpoints inside src/
+src/**/.ipynb_checkpoints/
+
+# Ignore reports and exported images
+reports/*.pdf
+reports/*.docx
+reports/*.pptx
+reports/*.png
+reports/*.jpg
+reports/*.svg
+
+# Ignore logs and debug files
+logs/
+*.log
+*.out
+*.err
+
+# Ignore compiled machine learning model files
+*.h5
+*.hdf5
+*.onnx
+*.pt
+*.tflite
+*.joblib
+*.pkl
+checkpoints/
+models/*
+artifacts/
+artifacts/**/*
+
+# Ignore configuration and secrets
+config.yaml*
+secrets.*
+.env
+
+# Ignore dependency caches
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Ignore VS Code settings
+.vscode/
+*.code-workspace
+
+# Ignore auto-generated Python files
+*.pyo
+*.pyd
+
+# Ignore MacOS & Linux system files
+.DS_Store
+*.swp
+
+# Ignore data files
+data/raw_dataset/
+
+# Wandb files
+notebooks/wandb
+
+# Ignore XAI checkpoints
+results/**/.ipynb_checkpoints/
