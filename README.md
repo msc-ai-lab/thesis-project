@@ -56,6 +56,9 @@ This command reads the `requirements.txt` file and installs the exact versions o
 pip install -r requirements.txt
 ```
 
+5. Create .env file that inlcudes content from .env.example, with your own OpenAI API key.  
+
+
 ## 🔬 Project Workflow
 The project is structured as a sequence of Jupyter notebooks that should be run in order to generate the necessary data and models.
 
@@ -70,6 +73,7 @@ jupyter lab
 2. `02_data_preparation.ipynb`: Splits the data and saves processed training/validation/test sets as `.pt` files.
 3. `03_model.ipynb`: Trains the CNN model and saves the final `cnn_trained_model.pth`.
 4. `04_xai_methods.ipynb`: Loads the trained model to generate the final XAI outputs (Grad-CAM, SHAP, etc.).
+5. `05_llm_api.ipynb` : Loads XAI outputs from the previous notebook and, using a set of instructions, prompts LLM to generate a user-friendly interpretation
 
 ## 📌 Contribution Workflow
 1. Create a feature branch:
