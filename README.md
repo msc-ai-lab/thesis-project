@@ -50,14 +50,41 @@ To start using the environment, you need to activate it.
 Your terminal prompt will change to show `(thesis-env)` to indicate it's active.
 
 4. Install Dependencies
-This command reads the `requirements.txt` file and installs the exact versions of all necessary packages into your new environment.
+
+First, ensure Jupyter Lab itself is installed in your new environment.
+
+```bash
+pip install jupyterlab ipykernel
+```
+
+Next, install all project-specific libraries from the requirements file.
 
 ```bash
 pip install -r requirements.txt
 ```
 
-5. Create .env file that inlcudes content from .env.example, with your own OpenAI API key.  
+This command reads the `requirements.txt` file and installs the exact versions of all necessary packages into your new environment.
 
+5. Create .env file that includes content from .env.example, with your own OpenAI API key.  
+
+## 🚀 Running the Project
+After setting up the environment, follow these steps to run the project notebooks.
+
+1. Link Your Environment to Jupyter
+This important one-time command makes the `thesis-env` selectable as a "kernel" inside Jupyter Lab.
+
+```bash
+python -m ipykernel install --user --name=thesis-env --display-name="Python (thesis-env)"
+```
+
+2. Start Jupyter Lab
+Now, launch the Jupyter Lab interface from your terminal.
+
+```bash
+jupyter lab
+```
+
+3. Select the Correct Kernel in Your Notebook
 
 ## 🔬 Project Workflow
 The project is structured as a sequence of Jupyter notebooks that should be run in order to generate the necessary data and models.
