@@ -94,3 +94,6 @@ results/**/.ipynb_checkpoints/
 
 # virtual environment directories
 thesis-env/
+
+# package cache directories
+*.egg-info/
