@@ -41,11 +41,10 @@ Usage:
 import os
 import torch
 from pathlib import Path
-from scd.model import load_model
 from scd.preprocess import preprocess_input
 from scd.inference import predict
 from scd.explainer import grad_cam
-from utils.common import get_model
+from scd.utils.common import get_model
 
 def main():
     try:
@@ -57,7 +56,7 @@ def main():
         MODEL_PATH = ROOT_DIR / 'models' / 'ViT-strata-aug-class_weights.pth'
         NUM_CLASSES = 2
         MODEL_NAME = 'ViT'
-        IMAGE_RESIZE = 224 if MODEL_NAME == 'ViT' else 299
+        IMAGE_RESIZE = (224, 224) if MODEL_NAME == 'ViT' else (299, 299)
 
         # Load the model
         model = get_model(model_name=MODEL_NAME, num_classes=NUM_CLASSES)

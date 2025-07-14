@@ -33,22 +33,24 @@ Usage:
 import numpy as np
 from PIL import Image
 import torch
-from utils.common import get_test_transforms
+from scd.utils.common import get_test_transforms
 
 # Function to preprocess input data
-def preprocess_input(img_path: str, resize: int = 299) -> torch.Tensor:
+def preprocess_input(img_path: str, resize: tuple = (224, 224)) -> torch.Tensor:
     """
     Preprocess the input image for inference.
     Parameters
     ----------
         img_path : str or Path
             Path to the input image file.
+        resize : tuple, optional
+            Desired size to resize the image to (default is (224, 224)).
     Returns
     -------
         torch.Tensor
             The preprocessed image tensor ready for inference.
     """
-    transformations = get_test_transforms(size=resize)
+    transformations = get_test_transforms(resize=resize)
 
     try:
         image = Image.open(img_path).convert('RGB')

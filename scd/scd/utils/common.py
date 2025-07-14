@@ -36,22 +36,23 @@ def load_datasets(path: str):
 
     return train_tensor_dataset, val_tensor_dataset, test_tensor_dataset
 
-def get_test_transforms(size: int = 299):
+def get_test_transforms(resize: tuple = (224, 224)):
     """
     Get the testing transformations for the dataset.
     
     Parameters
     ----------
-        size : int
-            The size to which the images will be resized. Default is 299.
-    
+        resize : tuple
+            The size to which the images will be resized. Default is (224, 224).
+
     Returns
     -------
         A.Compose
             A composition of transformations to be applied to the images.
     """
+    width, height = resize
     test_transforms = A.Compose([
-        A.Resize(height=size, width=size),
+        A.Resize(height=height, width=width),
         A.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
         ToTensorV2()
     ])

@@ -11,7 +11,7 @@ This module provides utility functions for various tasks in the project, includi
 Available Functions:
 ------------------
 - load_datasets(path): Load train, validation, and test datasets from saved PyTorch tensors
-- get_test_transforms(size): Get standardised testing transformations with resize and normalisation
+- get_test_transforms(resize): Get standardised testing transformations with resize and normalisation
 - get_model(model_name, num_classes): Initialise pre-trained models (Xception or ViT) for binary classification
 
 These utilities serve as the foundation for model implementation, training, evaluation, and interpretability analysis throughout the project.
