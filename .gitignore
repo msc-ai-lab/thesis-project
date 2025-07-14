@@ -93,3 +93,6 @@ results/**/.ipynb_checkpoints/
 
 # virtual environment directories
 thesis-env/
+
+# Ignore user_input files
+user_inputs/**/.ipynb_checkpoints/
