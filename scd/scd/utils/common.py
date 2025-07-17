@@ -7,7 +7,7 @@ import albumentations as A
 from albumentations.pytorch import ToTensorV2
 from transformers import ViTForImageClassification
 
-def load_datasets(path: str):
+def load_datasets(path: str) -> tuple:
     """
     Load the train, validation, and test datasets from the specified path.
     Parameters
@@ -20,23 +20,23 @@ def load_datasets(path: str):
             A tuple containing three TensorDataset objects: train, validation, and test datasets.
     """
     # Load the saved datasets
-    train_data = torch.load(os.path.join(path, 'train_dataset.pt'))
-    val_data = torch.load(os.path.join(path, 'val_dataset.pt'))
-    test_data = torch.load(os.path.join(path, 'test_dataset.pt'))
+    train_data = torch.load(os.path.join(path, 'train_dataset.pt'), weights_only=False)
+    val_data = torch.load(os.path.join(path, 'val_dataset.pt'), weights_only=False)
+    test_data = torch.load(os.path.join(path, 'test_dataset.pt'), weights_only=False)
 
     # Extract images and labels
-    train_images, train_labels = train_data['images'], train_data['labels']
+    train_images, train_labels, train_filenames = train_data['images'], train_data['labels'], train_data['filenames']
     val_images, val_labels = val_data['images'], val_data['labels']
     test_images, test_labels = test_data['images'], test_data['labels']
 
     # Create TensorDataset objects
-    train_tensor_dataset = TensorDataset(train_images, train_labels)
+    train_tensor_dataset = TensorDataset(train_images, train_labels, train_filenames)
     val_tensor_dataset = TensorDataset(val_images, val_labels)
     test_tensor_dataset = TensorDataset(test_images, test_labels)
 
     return train_tensor_dataset, val_tensor_dataset, test_tensor_dataset
 
-def get_test_transforms(resize: tuple = (224, 224)):
+def get_test_transforms(resize: tuple = (224, 224)) -> A.Compose:
     """
     Get the testing transformations for the dataset.
     
@@ -59,7 +59,7 @@ def get_test_transforms(resize: tuple = (224, 224)):
 
     return test_transforms
 
-def get_model(model_name: str, num_classes: int = 2):
+def get_model(model_name: str, num_classes: int = 2) -> nn.Module:
     """
     Get the model based on the provided model name.
     
@@ -84,6 +84,12 @@ def get_model(model_name: str, num_classes: int = 2):
             ignore_mismatched_sizes=True,
             attn_implementation="sdpa"
         )
+        # model = ViTForImageClassification.from_pretrained(
+        #     'google/vit-base-patch32-384',
+        #     num_labels=num_classes,
+        #     ignore_mismatched_sizes=True,
+        #     attn_implementation="sdpa"
+        # )
     else:
         raise ValueError(f"Model {model_name} is not supported.")
 

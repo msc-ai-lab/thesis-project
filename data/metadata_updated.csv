@@ -1,4 +1,4 @@
-Unnamed: 0,DDI_ID,DDI_file,skin_tone,malignant,disease,strata
+Unnamed: 0,DDI_ID,image_id,skin_tone,malignant,disease,strata
 0,1,000001.png,56,1,melanoma-in-situ,56_1
 1,2,000002.png,56,1,melanoma-in-situ,56_1
 2,3,000003.png,56,1,mycosis-fungoides,56_1
