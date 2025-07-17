@@ -18,6 +18,7 @@ datasets/*.npz
 datasets/*.pkl
 data/raw_dataset/*
 data/processed_dataset/*
+data/augmented_images
 
 # Ignore compiled Python files
 src/**/*.pyc
@@ -97,5 +98,9 @@ thesis-env/
 # Ignore user_input files
 user_inputs/**/.ipynb_checkpoints/
 
+# package cache directories
+*.egg-info/
+
 # Ignore LLM output
 results/xai_output/llm_output.txt
+
