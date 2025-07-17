@@ -97,5 +97,10 @@ thesis-env/
 
 # Ignore user_input files
 user_inputs/**/.ipynb_checkpoints/
+
 # package cache directories
 *.egg-info/
+
+# Ignore LLM output
+results/xai_output/llm_output.txt
+
