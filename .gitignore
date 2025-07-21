@@ -88,6 +88,7 @@ data/raw_dataset/
 
 # Wandb files
 notebooks/wandb
+wandb/
 
 # Ignore XAI checkpoints
 results/**/.ipynb_checkpoints/
@@ -100,6 +101,7 @@ user_inputs/**/.ipynb_checkpoints/
 
 # package cache directories
 *.egg-info/
+.coverage
 
 # Ignore LLM output
 results/xai_output/llm_output.txt

@@ -1,0 +1,6 @@
+# MANIFEST.in for Skin Cancer Detection (SCD) Package
+
+# Include documentation and license files
+include LICENSE
+include README.md
+include setup.py

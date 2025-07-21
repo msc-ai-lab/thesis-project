@@ -38,13 +38,13 @@ Usage:
     # - Grad-CAM visualisation overlay
 """
 
-import os
+
 import torch
 from pathlib import Path
 from scd.preprocess import preprocess_input
 from scd.inference import predict
 from scd.explainer import grad_cam
-from scd.utils.common import get_model
+from scd.utils.common import load_model
 
 def main():
     try:
@@ -52,16 +52,12 @@ def main():
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         # Define paths
-        ROOT_DIR = Path(os.getcwd())
-        MODEL_PATH = ROOT_DIR / 'models' / 'ViT-strata-aug-class_weights.pth'
-        NUM_CLASSES = 2
-        MODEL_NAME = 'ViT'
-        IMAGE_RESIZE = (224, 224) if MODEL_NAME == 'ViT' else (299, 299)
+        ROOT_DIR = Path.cwd()
+        MODEL_PATH = ROOT_DIR / 'models' / 'ResNet_skin_cancer_classification.pth'
+        IMAGE_RESIZE = (384, 384)
 
         # Load the model
-        model = get_model(model_name=MODEL_NAME, num_classes=NUM_CLASSES)
-        model.load_state_dict(torch.load(MODEL_PATH, map_location=device))
-        model.to(device)
+        model = load_model(MODEL_PATH)
 
         # Ask user for image path
         image_path = input("Please enter the path to your image: ")
