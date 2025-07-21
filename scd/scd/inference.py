@@ -35,7 +35,6 @@ Usage:
 # Third-party imports
 import torch
 from torch import nn
-from torch.nn import functional as F
 
 # Function to predict using the model
 def predict(model: nn.Module, input_tensor: torch.Tensor):
@@ -54,19 +53,18 @@ def predict(model: nn.Module, input_tensor: torch.Tensor):
         dict
             A dictionary with probabilities for each class.
     """
-    with torch.no_grad():
-      output = model(input_tensor)
-      logits = output.logits if hasattr(output, 'logits') else output
-      
-      # Get probabilities using softmax
-      probabilities = F.softmax(logits, dim=1)
-      
-      # Get class prediction
-      pred_idx = torch.argmax(logits, dim=1).item()
-      pred = "Benign" if pred_idx == 0 else "Malignant"
-      
-      # Get probability values
-      benign_prob = probabilities[0, 0].item()
-      malignant_prob = probabilities[0, 1].item()
+    try:
+        with torch.no_grad():
+            outputs, _ = model(input_tensor)
+            
+            # Get class prediction
+            pred_idx = torch.argmax(outputs, dim=1).item()
+            pred = "Benign" if pred_idx == 0 else "Malignant"
+            
+            # Get probability values
+            benign_prob = outputs[0, 0].item()
+            malignant_prob = outputs[0, 1].item()
 
-    return (pred_idx, pred), {"Benign": benign_prob, "Malignant": malignant_prob}
+            return (pred_idx, pred), {"Benign": benign_prob, "Malignant": malignant_prob}
+    except Exception as e:
+        raise RuntimeError(f"Error during prediction: {str(e)}") from e

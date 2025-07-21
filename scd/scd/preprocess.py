@@ -58,5 +58,7 @@ def preprocess_input(img_path: str, resize: tuple = (224, 224)) -> torch.Tensor:
         processed_image = transformations(image=image_np)['image']
 
         return processed_image.unsqueeze(0)  # Add batch dimension
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Image file not found: {img_path}")
     except Exception as e:
         raise RuntimeError(f"Error processing image: {e}")

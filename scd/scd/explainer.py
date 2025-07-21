@@ -40,7 +40,7 @@ from captum.attr import LayerGradCam
 import matplotlib.pyplot as plt
 
 def grad_cam(model: nn.Module, input_tensor: torch.Tensor, input_image: torch.Tensor, predicted_class_index: int):
-  grad_cam_layer = model.act4
+  grad_cam_layer = model.vit.embeddings.patch_embeddings.projection
   layer_gc = LayerGradCam(model, grad_cam_layer)
   attribution_gc = layer_gc.attribute(input_tensor, target=predicted_class_index)
 
