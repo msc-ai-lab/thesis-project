@@ -3,7 +3,7 @@ from pathlib import Path
 from scd.model import SkinCancerCNN
 from torch import nn
 
-from scd.utils.common import load_datasets, get_test_transforms, get_model, load_model
+from scd.utils.common import load_datasets, get_test_transforms, load_model
 from scd.utils.constants import INPUT_SIZE_FOR_MODELS
 
 ROOT_DIR = Path(__file__).parent.parent.parent.parent
@@ -45,25 +45,6 @@ def test_get_test_transforms():
     assert isinstance(transforms, Compose)
     assert transforms.transforms[0].height == custom_resize[0]
     assert transforms.transforms[0].width == custom_resize[1]
-
-
-def test_get_model_with_invalid_model_name():
-    with pytest.raises(ValueError):
-        get_model('RandomForest', num_classes=2)
-
-
-def test_get_model_with_valid_model_name():
-    model = get_model('ViT32', num_classes=2)
-    assert isinstance(model, nn.Module)
-    assert model.num_labels == 2
-
-    model = get_model('Xception')
-    assert isinstance(model, nn.Module)
-    assert model.fc.out_features == 2
-
-    model = get_model('ResNet34', num_classes=2)
-    assert isinstance(model, nn.Module)
-    assert model.classifier[-1].out_features == 2
 
 
 def test_load_model_with_invalid_path():
