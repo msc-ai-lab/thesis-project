@@ -1,11 +1,8 @@
 import os
-import timm
 import torch
-from torch import nn
 from torch.utils.data import TensorDataset
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
-from transformers import AutoModelForImageClassification
 
 from scd.utils.constants import MODELS_LIST
 from scd.model import SkinCancerCNN
@@ -79,49 +76,6 @@ def get_test_transforms(resize: tuple = (224, 224)) -> A.Compose:
 
     return test_transforms
 
-
-def get_model(model_name: str, num_classes: int = 2) -> nn.Module:
-    """
-    Get the base model based on the provided model name.
-    
-    Parameters
-    ----------
-        model_name : str
-            The name of the model to retrieve. Supported models are 'Xception' and 'ViT'.
-        num_classes : int
-            The number of output classes for the model. Default is 2.
-    Returns
-    -------
-        torch.nn.Module
-            The model instance corresponding to the provided model name.
-    """
-    if 'ResNet' in model_name:
-        model = SkinCancerCNN(num_classes=num_classes)
-    elif model_name == 'Xception' or model_name == 'VGG16':
-        if model_name == 'Xception':
-            model = timm.create_model('legacy_xception', pretrained=True)
-            model.fc = nn.Linear(model.fc.in_features, num_classes)
-        else:
-            model = timm.create_model('hf_hub:timm/vgg16.tv_in1k', pretrained=True)
-            model.head.fc = nn.Linear(model.head.fc.in_features, num_classes)
-    else:
-        try:
-            name = MODELS_LIST[model_name]
-
-            extra_kwargs = {}
-            if 'ViT' in name:
-                extra_kwargs['attn_implementation'] = 'sdpa'
-        
-            model = AutoModelForImageClassification.from_pretrained(
-                name,
-                num_labels=num_classes,
-                ignore_mismatched_sizes=True,
-                **extra_kwargs
-            )
-        except KeyError:
-            raise ValueError(f"Model '{model_name}' is not supported. Supported models are: {list(MODELS_LIST.keys())}")
-
-    return model
 
 def load_model(model_path: str) -> SkinCancerCNN:
     """
