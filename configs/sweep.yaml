@@ -1,0 +1,25 @@
+method: bayes
+metric:
+  goal: minimize
+  name: Relative Time (Process)
+parameters:
+  use_class_weights:
+    values:
+      - "true"
+    distribution: categorical
+  learning_rate:
+    max: 0.001
+    min: 0.00001
+    distribution: uniform
+  batch_size:
+    max: 64
+    min: 16
+    distribution: int_uniform
+  epochs:
+    max: 20
+    min: 3
+    distribution: int_uniform
+  type:
+    values:
+      - hyperparameter
+    distribution: categorical
