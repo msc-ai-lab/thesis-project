@@ -4,7 +4,6 @@ from torch.utils.data import TensorDataset
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
 
-from scd.utils.constants import MODELS_LIST
 from scd.model import SkinCancerCNN
 
 def load_datasets(path: str, only_train_dataset_with_filenames: bool = False) -> tuple:
@@ -53,14 +52,14 @@ def load_datasets(path: str, only_train_dataset_with_filenames: bool = False) ->
         raise RuntimeError(f"An error occurred while loading datasets from {path}: {e}")
 
 
-def get_test_transforms(resize: tuple = (224, 224)) -> A.Compose:
+def get_test_transforms(resize: tuple = (384, 384)) -> A.Compose:
     """
     Get the testing transformations for the dataset.
     
     Parameters
     ----------
         resize : tuple
-            The size to which the images will be resized. Default is (224, 224).
+            The size to which the images will be resized. Default is (384, 384).
 
     Returns
     -------
