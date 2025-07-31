@@ -43,6 +43,7 @@ from torch import nn
 from torch.nn import functional as F
 from captum.attr import LayerGradCam, Occlusion
 from captum.attr import visualization as viz
+from llm_xai.utils.helpers import extract_size
 
 class WrapperModel(nn.Module):
     """Wrapper for model to handle output format"""
@@ -55,16 +56,6 @@ class WrapperModel(nn.Module):
         logits = self.model(input_tensor)
         # Handle tuple output (logits, attention_map) from SkinCancerCNN
         return logits[0] if isinstance(logits, tuple) else logits
-
-def extract_size(input_tensor: torch.Tensor):
-    """Extract height and width from input tensor for resizing"""
-    if len(input_tensor.shape) == 4:  # Batch dimension included
-        _, _, height, width = input_tensor.shape
-        size = (height, width)
-    else:  # No batch dimension
-        _, height, width = input_tensor.shape
-        size = (height, width)
-    return size
 
 def grad_cam(model: nn.Module, input_tensor: torch.Tensor, input_image: torch.Tensor, predicted_class_index: int):
   model.eval()  # Set model to evaluation mode
@@ -89,10 +80,12 @@ def grad_cam(model: nn.Module, input_tensor: torch.Tensor, input_image: torch.Te
   heatmap = heatmap.squeeze().cpu().detach().numpy()
   
   # Create a composite image for return
-  plt.figure(figsize=(8, 8))
-  # plt.imshow(image)
-  # plt.imshow(heatmap, cmap='jet', alpha=0.4)
-  plt.axis('off')
+  fig, ax = plt.subplots(figsize=(8, 8))
+  ax.imshow(image)
+  heatmap_img = ax.imshow(heatmap, cmap='jet', alpha=0.4)
+  plt.colorbar(heatmap_img, ax=ax, fraction=0.046, pad=0.04, label='Attribution Intensity')
+  ax.axis('off')
+  plt.show()
   
   # Save to buffer and convert to image for return
   buf = io.BytesIO()
@@ -128,7 +121,7 @@ def shap(model: nn.Module, input_tensor: torch.Tensor, input_image: torch.Tensor
                           np.array(image), 
                           method="blended_heat_map", 
                           sign="all", 
-                          show_colorbar=False, 
+                          show_colorbar=True, 
                           plt_fig_axis=(fig_shap, ax_shap))
   plt.show()
 
