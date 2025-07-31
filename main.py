@@ -43,8 +43,8 @@ import torch
 from pathlib import Path
 from scd.preprocess import preprocess_input
 from scd.inference import predict
-from scd.explainer import grad_cam
 from scd.utils.common import load_model
+from llm_xai.explainer import grad_cam, shap
 
 def main():
     try:
@@ -69,15 +69,20 @@ def main():
             exit(1)
 
         # Preprocess the input image
-        image = preprocess_input(input_path, resize=IMAGE_RESIZE).to(device)
+        image_tensor = preprocess_input(input_path, resize=IMAGE_RESIZE).to(device)
 
         # Predict the class and get probabilities
-        (pred_idx, output), probs = predict(model, image)
+        (pred_idx, output), probs = predict(model, image_tensor)
         print(f"Inference result: {output}")
         print(f"Probabilities: {probs}")
 
-        # Generate Grad-CAM visualization
-        # grad_cam(model, image, input_path, predicted_class_index=pred_idx)
+        # Generate Grad-CAM visualisation
+        print('Generating Grad-CAM visualisation...')
+        gradcam_viz = grad_cam(model, image_tensor, input_path, predicted_class_index=pred_idx)
+
+        # Generate SHAP visualisation
+        print('Generating SHAP visualisation...')
+        shap(model, image_tensor, input_path, predicted_class_index=pred_idx)
     except Exception as e:
         print(f"An error occurred during inference: {e}")
 
