@@ -29,7 +29,7 @@ def load_datasets(path: str, only_train_dataset_with_filenames: bool = False) ->
 
         if only_train_dataset_with_filenames:
             # If only training data with filenames is needed, return only the train dataset
-            return TensorDataset(train_data['images'], train_data['labels'], train_data['filenames'])
+            return TensorDataset(train_data['images'], train_data['labels']), train_data['filenames']
 
         # Load validation and test datasets
         val_data = torch.load(os.path.join(path, 'val_dataset.pt'), weights_only=False)
@@ -94,9 +94,8 @@ def load_model(model_path: str) -> SkinCancerCNN:
         if not os.path.exists(model_path):
             raise FileNotFoundError(f"Model file not found at {model_path}")
         
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         model = SkinCancerCNN(num_classes=2)
-        model.load_state_dict(torch.load(model_path, map_location=device))
+        model.load_state_dict(torch.load(model_path))
         model.eval()
         
         return model

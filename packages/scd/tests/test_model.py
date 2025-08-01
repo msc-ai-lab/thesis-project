@@ -8,21 +8,20 @@ def test_model_initialization():
 def test_forward_pass():
     model = SkinCancerCNN()
     model.eval()  # Set model to evaluation mode
-    # Create sample input with appropriate shape
-    batch_size = 2
-    input_tensor = torch.randn(batch_size, 3, 224, 224)
+    # Create dummy input tensor (batch_size=2, channels=3, height=384, width=384)
+    x = torch.randn(2, 3, 384, 384)
     
     # Forward pass
-    with torch.no_grad():
-        outputs, attention_map = model(input_tensor)
+    logits, attention_map = model(x)
     
-    # Check output shape
-    assert outputs.shape == (batch_size, 2), f"Expected output shape (2, 2), got {outputs.shape}"
+    # Test output shapes
+    assert logits.shape == (2, 2), f"Expected logits shape (2, 2), got {logits.shape}"
+    assert attention_map.shape[0] == 2, f"Expected batch size 2, got {attention_map.shape[0]}"
+    assert attention_map.shape[1] == 1, f"Expected 1 attention channel, got {attention_map.shape[1]}"
     
-    # Check attention map shape
-    assert attention_map.shape[0] == batch_size, "Batch size mismatch in attention map"
-    assert attention_map.shape[1] == 1, "Attention map should have 1 channel"
+    # Test output types
+    assert isinstance(logits, torch.Tensor), "Logits should be a torch.Tensor"
+    assert isinstance(attention_map, torch.Tensor), "Attention map should be a torch.Tensor"
     
-    # Check if outputs are valid probabilities (softmax output)
-    assert torch.all(outputs >= 0) and torch.all(outputs <= 1), "Outputs should be probabilities between 0 and 1"
-    assert torch.allclose(outputs.sum(dim=1), torch.ones(batch_size)), "Probability distribution should sum to 1"
+    # Test attention map values (should be between 0 and 1 after sigmoid)
+    assert torch.all(attention_map >= 0) and torch.all(attention_map <= 1), "Attention values should be in range [0,1]"

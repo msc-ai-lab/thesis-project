@@ -3,8 +3,10 @@ import torch
 from pathlib import Path
 from scd.preprocess import preprocess_input
 
+ROOT_DIR = Path(__file__).parent.parent.parent.parent
+
 def test_preprocess_input_with_valid_image():
-    img_path = Path(__file__).parent.parent.parent / 'data' / 'raw_dataset' / 'images' / '000001.png'
+    img_path =  ROOT_DIR / 'data' / 'raw_dataset' / 'images' / '000001.png'
     processed_tensor = preprocess_input(img_path, (224, 224))
     
     assert isinstance(processed_tensor, torch.Tensor)
@@ -13,7 +15,7 @@ def test_preprocess_input_with_valid_image():
 
 
 def test_preprocess_input_with_invalid_image():
-    img_path = Path(__file__).parent.parent.parent / 'data' / 'raw_dataset' / 'images' / 'non_existent_image.png'
-    
+    img_path = ROOT_DIR / 'data' / 'raw_dataset' / 'images' / 'non_existent_image.png'
+
     with pytest.raises(FileNotFoundError):
         preprocess_input(img_path, (224, 224))

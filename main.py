@@ -87,6 +87,7 @@ def main():
         shap_viz = shap(model, image_tensor, input_path, predicted_class_index=pred_idx)
 
         # Influence Function
+        print('Calculating influence...')
         dataset, filenames = load_datasets(DATASET_PATH, only_train_dataset_with_filenames=True)
         influencers = calculate_influence(model, image_tensor, pred_idx, dataset, filenames)
         print(influencers.head(5))

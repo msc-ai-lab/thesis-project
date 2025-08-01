@@ -29,7 +29,7 @@ def test_predict():
     
     # Test case 1: Benign prediction
     benign_model = MockModel(return_benign=True)
-    input_tensor = torch.randn(1, 3, 224, 224)  # Mock image tensor
+    input_tensor = torch.randn(1, 3, 384, 384)  # Mock image tensor
     
     (pred_idx, pred_name), probabilities = predict(benign_model, input_tensor)
     
@@ -62,7 +62,7 @@ def test_predict_output_types():
     """Test that predict function returns correct output types."""
     
     model = MockModel(return_benign=True)
-    input_tensor = torch.randn(1, 3, 224, 224)
+    input_tensor = torch.randn(1, 3, 384, 384)
     
     result = predict(model, input_tensor)
     

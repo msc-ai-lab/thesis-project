@@ -35,6 +35,7 @@ Usage:
 # Third-party imports
 import torch
 from torch import nn
+from torch.nn.functional import softmax
 
 # Function to predict using the model
 def predict(model: nn.Module, input_tensor: torch.Tensor):
@@ -62,8 +63,9 @@ def predict(model: nn.Module, input_tensor: torch.Tensor):
             pred = "Benign" if pred_idx == 0 else "Malignant"
             
             # Get probability values
-            benign_prob = outputs[0, 0].item()
-            malignant_prob = outputs[0, 1].item()
+            probabilities = softmax(outputs, dim=1).squeeze()
+            benign_prob = probabilities[0].item()
+            malignant_prob = probabilities[1].item()
 
             return (pred_idx, pred), {"Benign": benign_prob, "Malignant": malignant_prob}
     except Exception as e:

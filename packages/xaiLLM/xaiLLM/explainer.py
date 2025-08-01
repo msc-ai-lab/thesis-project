@@ -56,90 +56,160 @@ class WrapperModel(nn.Module):
         self.model = model
         
     def get_logits(self, input_tensor):
+        """        
+        Forward pass through the model to get logits.
+
+        Parameters
+        ----------
+        input_tensor : torch.Tensor
+            The input tensor for which to get the logits.
+        
+        Returns
+        -------
+        torch.Tensor
+            The logits output from the model.
+        """
         logits = self.model(input_tensor)
         # Handle tuple output (logits, attention_map) from SkinCancerCNN
         return logits[0] if isinstance(logits, tuple) else logits
 
-def grad_cam(model: nn.Module, input_tensor: torch.Tensor, input_image: torch.Tensor, predicted_class_index: int):
-  model.eval()  # Set model to evaluation mode
-  model_wrapper = WrapperModel(model)
-  size = extract_size(input_tensor)
+def grad_cam(model: nn.Module, input_tensor: torch.Tensor, input_image: torch.Tensor, predicted_class_index: int) -> Image:
+    """
+    Generate Grad-CAM visualisation for the input tensor using the model.
 
-  # Open and convert the image to RGB
-  image = Image.open(input_image).convert('RGB')
-  image = image.resize(size, resample=Image.BILINEAR)
+    Parameters
+    ----------
+    model : nn.Module
+        The model to use for Grad-CAM.
+    input_tensor : torch.Tensor
+        The preprocessed input tensor.
+    input_image : torch.Tensor
+        The original image tensor for visualisation.
+    predicted_class_index : int
+        The index of the predicted class.
 
-  # Ensure input tensor requires gradients
-  if not input_tensor.requires_grad:
-    input_tensor.requires_grad_(True)
+    Returns
+    -------
+    Image
+        A PIL Image with Grad-CAM overlay.
+    """
+    model.eval()  # Set model to evaluation mode
+    model_wrapper = WrapperModel(model)
+    size = extract_size(input_tensor)
 
-  # Apply Grad-CAM
-  grad_cam_layer = model.features[-1]
-  layer_gc = LayerGradCam(model_wrapper.get_logits, grad_cam_layer)
-  attribution_gc = layer_gc.attribute(input_tensor, target=predicted_class_index)
+    # Open and convert the image to RGB
+    image = Image.open(input_image).convert('RGB')
+    image = image.resize(size, resample=Image.BILINEAR)
 
-  # Visualise GRAD-CAM
-  heatmap = F.interpolate(attribution_gc, size=image.size, mode='bilinear', align_corners=False)
-  heatmap = heatmap.squeeze().cpu().detach().numpy()
-  
-  # Create a composite image for return
-  fig, ax = plt.subplots(figsize=(8, 8))
-  ax.imshow(image)
-  heatmap_img = ax.imshow(heatmap, cmap='jet', alpha=0.4)
-  plt.colorbar(heatmap_img, ax=ax, fraction=0.046, pad=0.04, label='Attribution Intensity')
-  ax.axis('off')
-  plt.show()
-  
-  # Save to buffer and convert to image for return
-  buf = io.BytesIO()
-  plt.savefig(buf, format='png', bbox_inches='tight', pad_inches=0)
-  buf.seek(0)
-  composite_image = Image.open(buf)
-  plt.close()
-  
-  return composite_image
+    # Ensure input tensor requires gradients
+    if not input_tensor.requires_grad:
+        input_tensor.requires_grad_(True)
 
+    # Apply Grad-CAM
+    grad_cam_layer = model.features[-1]
+    layer_gc = LayerGradCam(model_wrapper.get_logits, grad_cam_layer)
+    attribution_gc = layer_gc.attribute(input_tensor, target=predicted_class_index)
 
-def shap(model: nn.Module, input_tensor: torch.Tensor, input_image: torch.Tensor, predicted_class_index: int):
-  model.eval()  # Set model to evaluation mode
-  model_wrapper = WrapperModel(model)
-
-  size = extract_size(input_tensor)
-
-  # Open and convert the image to RGB
-  image = Image.open(input_image).convert('RGB')
-  image = image.resize(size, resample=Image.BILINEAR)
-
-  occlusion = Occlusion(model_wrapper.get_logits)
-
-  # Adjust sliding window shapes for the new 384x384 size
-  attribution_shap = occlusion.attribute(input_tensor, 
-                                        strides=(3, 32, 32), 
-                                        target=predicted_class_index, 
-                                        sliding_window_shapes=(3, 48, 48),
-                                        baselines=0)
-
-  fig_shap, ax_shap = plt.subplots(figsize=(8, 8))
-  ax_shap.axis('off')
-  viz.visualize_image_attr(np.transpose(attribution_shap.squeeze().cpu().detach().numpy(), (1,2,0)), 
-                          np.array(image), 
-                          method="blended_heat_map", 
-                          sign="all", 
-                          show_colorbar=True, 
-                          plt_fig_axis=(fig_shap, ax_shap))
-  plt.show()
-
-  # Save to buffer and convert to image for return
-  buf = io.BytesIO()
-  plt.savefig(buf, format='png', bbox_inches='tight', pad_inches=0)
-  buf.seek(0)
-  composite_image = Image.open(buf)
-  plt.close()
-  
-  return composite_image
+    # Visualise GRAD-CAM
+    heatmap = F.interpolate(attribution_gc, size=image.size, mode='bilinear', align_corners=False)
+    heatmap = heatmap.squeeze().cpu().detach().numpy()
+    
+    # Create a composite image for return
+    fig, ax = plt.subplots(figsize=(8, 8))
+    ax.imshow(image)
+    heatmap_img = ax.imshow(heatmap, cmap='jet', alpha=0.4)
+    plt.colorbar(heatmap_img, ax=ax, fraction=0.046, pad=0.04, label='Attribution Intensity')
+    ax.axis('off')
+    plt.show()
+    
+    # Save to buffer and convert to image for return
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png', bbox_inches='tight', pad_inches=0)
+    buf.seek(0)
+    composite_image = Image.open(buf)
+    plt.close()
+    
+    return composite_image
 
 
-def get_gradient_and_prediction(model, data_tensor, target, loss_fn):
+def shap(model: nn.Module, input_tensor: torch.Tensor, input_image: torch.Tensor, predicted_class_index: int) -> Image:
+    """
+    Generate SHAP visualisation for the input tensor using the model.
+
+    Parameters
+    ----------
+    model : nn.Module
+        The model to use for SHAP.
+    input_tensor : torch.Tensor
+        The preprocessed input tensor.
+    input_image : torch.Tensor
+        The original image tensor for visualisation.
+    predicted_class_index : int
+        The index of the predicted class.
+
+    Returns
+    -------
+    Image
+        A PIL Image with SHAP overlay.
+    """
+    model.eval()  # Set model to evaluation mode
+    model_wrapper = WrapperModel(model)
+
+    size = extract_size(input_tensor)
+
+    # Open and convert the image to RGB
+    image = Image.open(input_image).convert('RGB')
+    image = image.resize(size, resample=Image.BILINEAR)
+
+    occlusion = Occlusion(model_wrapper.get_logits)
+
+    # Adjust sliding window shapes for the new 384x384 size
+    attribution_shap = occlusion.attribute(input_tensor, 
+                                          strides=(3, 32, 32), 
+                                          target=predicted_class_index, 
+                                          sliding_window_shapes=(3, 48, 48),
+                                          baselines=0)
+
+    fig_shap, ax_shap = plt.subplots(figsize=(8, 8))
+    ax_shap.axis('off')
+    viz.visualize_image_attr(np.transpose(attribution_shap.squeeze().cpu().detach().numpy(), (1,2,0)), 
+                            np.array(image), 
+                            method="blended_heat_map", 
+                            sign="all", 
+                            show_colorbar=True, 
+                            plt_fig_axis=(fig_shap, ax_shap))
+    plt.show()
+
+    # Save to buffer and convert to image for return
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png', bbox_inches='tight', pad_inches=0)
+    buf.seek(0)
+    composite_image = Image.open(buf)
+    plt.close()
+
+    return composite_image  
+
+
+def get_gradient_and_prediction(model, data_tensor, target, loss_fn) -> tuple:
+    """
+    Calculate the gradient and prediction for a given input tensor.
+
+    Parameters
+    ----------
+    model : nn.Module
+        The model to use for prediction.
+    data_tensor : torch.Tensor
+        The input tensor for which to compute the gradient and prediction.
+    target : torch.Tensor
+        The ground truth labels.
+    loss_fn : nn.Module
+        The loss function to use for backpropagation.
+
+    Returns
+    -------
+    tuple
+        A tuple containing the gradient and the predicted class index.
+    """
     model.eval()
     model_wrapper = WrapperModel(model)
 
@@ -152,7 +222,30 @@ def get_gradient_and_prediction(model, data_tensor, target, loss_fn):
     return grad.flatten(), pred_idx.item()
 
 
-def calculate_real_influence(model, train_loader, filenames, test_tensor, test_target, device):
+def calculate_real_influence(model, train_loader, filenames, test_tensor, test_target, device) -> list:
+    """
+    Calculate the influence of training examples on an image classification using gradient similarity.
+
+    Parameters
+    ----------
+    model : nn.Module
+        The model to use for influence calculation.
+    train_loader : DataLoader
+        The DataLoader for the training dataset.
+    filenames : list
+        The list of filenames corresponding to the training dataset.
+    test_tensor : torch.Tensor
+        The input tensor for the test example.
+    test_target : torch.Tensor
+        The ground truth label for the test example.
+    device : torch.device
+        The device to perform calculations on (CPU or GPU).
+
+    Returns
+    -------
+    list
+        A list of influence scores for each training example.
+    """
     model.to(device)
     model.eval()
     test_tensor = test_tensor.to(device)
@@ -174,7 +267,28 @@ def calculate_real_influence(model, train_loader, filenames, test_tensor, test_t
     return results
 
 
-def calculate_influence(model, input_tensor, predicted_class_index, training_dataset, filenames):
+def calculate_influence(model, input_tensor, predicted_class_index, training_dataset, filenames) -> pd.DataFrame:
+    """
+    Calculate the influence of training examples on a given input tensor using gradient similarity.
+
+    Parameters
+    ----------
+    model : nn.Module
+        The model to use for influence calculation.
+    input_tensor : torch.Tensor
+        The input tensor for which to calculate influence.
+    predicted_class_index : int
+        The index of the predicted class.
+    training_dataset : Dataset
+        The training dataset containing examples and labels.
+    filenames : list
+        The list of filenames corresponding to the training dataset.
+
+    Returns
+    -------
+    pd.DataFrame
+        A DataFrame containing the top 100 most influential training examples.
+    """
     try:
       device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
       training_dataloader = DataLoader(training_dataset, batch_size=32, shuffle=False)
