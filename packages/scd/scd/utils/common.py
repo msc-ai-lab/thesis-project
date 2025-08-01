@@ -90,11 +90,15 @@ def load_model(model_path: str) -> SkinCancerCNN:
         SkinCancerCNN
             An instance of the SkinCancerCNN model loaded with the pre-trained weights.
     """
-    if not os.path.exists(model_path):
-        raise FileNotFoundError(f"Model file not found at {model_path}")
-
-    model = SkinCancerCNN(num_classes=2)
-    model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
-    model.eval()
-    
-    return model
+    try:
+        if not os.path.exists(model_path):
+            raise FileNotFoundError(f"Model file not found at {model_path}")
+        
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        model = SkinCancerCNN(num_classes=2)
+        model.load_state_dict(torch.load(model_path, map_location=device))
+        model.eval()
+        
+        return model
+    except Exception as e:
+        raise RuntimeError(f"An error occurred while loading the model from {model_path}: {e}")

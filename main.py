@@ -41,7 +41,6 @@ Usage:
 
 import torch
 from pathlib import Path
-from torch.utils.data import DataLoader
 
 from scd.preprocess import preprocess_input
 from scd.inference import predict
