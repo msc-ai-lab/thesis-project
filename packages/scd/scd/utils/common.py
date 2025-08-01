@@ -29,7 +29,7 @@ def load_datasets(path: str, only_train_dataset_with_filenames: bool = False) ->
 
         if only_train_dataset_with_filenames:
             # If only training data with filenames is needed, return only the train dataset
-            return TensorDataset(train_data['images'], train_data['labels']), train_data['filenames']
+            return TensorDataset(train_data['images'], train_data['labels'], train_data['filenames'])
 
         # Load validation and test datasets
         val_data = torch.load(os.path.join(path, 'val_dataset.pt'), weights_only=False)

@@ -41,10 +41,12 @@ Usage:
 
 import torch
 from pathlib import Path
+from torch.utils.data import DataLoader
+
 from scd.preprocess import preprocess_input
 from scd.inference import predict
-from scd.utils.common import load_model
-from llm_xai.explainer import grad_cam, shap
+from scd.utils.common import load_model, load_datasets
+from xaiLLM.explainer import grad_cam, shap, calculate_influence
 
 def main():
     try:
@@ -53,6 +55,7 @@ def main():
 
         # Define paths
         ROOT_DIR = Path.cwd()
+        DATASET_PATH = ROOT_DIR / 'data' / 'processed'
         MODEL_PATH = ROOT_DIR / 'models' / 'ResNet_skin_cancer_classification.pth'
         IMAGE_RESIZE = (384, 384)
 
@@ -82,7 +85,12 @@ def main():
 
         # Generate SHAP visualisation
         print('Generating SHAP visualisation...')
-        shap(model, image_tensor, input_path, predicted_class_index=pred_idx)
+        shap_viz = shap(model, image_tensor, input_path, predicted_class_index=pred_idx)
+
+        # Influence Function
+        dataset, filenames = load_datasets(DATASET_PATH, only_train_dataset_with_filenames=True)
+        influencers = calculate_influence(model, image_tensor, pred_idx, dataset, filenames)
+        print(influencers.head(5))
     except Exception as e:
         print(f"An error occurred during inference: {e}")
 
