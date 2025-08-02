@@ -41,10 +41,11 @@ Usage:
 
 import torch
 from pathlib import Path
+
 from scd.preprocess import preprocess_input
 from scd.inference import predict
-from scd.explainer import grad_cam
-from scd.utils.common import load_model
+from scd.utils.common import load_model, load_datasets
+from xaiLLM.explainer import grad_cam, shap, calculate_influence
 
 def main():
     try:
@@ -53,6 +54,7 @@ def main():
 
         # Define paths
         ROOT_DIR = Path.cwd()
+        DATASET_PATH = ROOT_DIR / 'data' / 'processed'
         MODEL_PATH = ROOT_DIR / 'models' / 'ResNet_skin_cancer_classification.pth'
         IMAGE_RESIZE = (384, 384)
 
@@ -69,15 +71,26 @@ def main():
             exit(1)
 
         # Preprocess the input image
-        image = preprocess_input(input_path, resize=IMAGE_RESIZE).to(device)
+        image_tensor = preprocess_input(input_path, resize=IMAGE_RESIZE).to(device)
 
         # Predict the class and get probabilities
-        (pred_idx, output), probs = predict(model, image)
+        (pred_idx, output), probs = predict(model, image_tensor)
         print(f"Inference result: {output}")
         print(f"Probabilities: {probs}")
 
-        # Generate Grad-CAM visualization
-        # grad_cam(model, image, input_path, predicted_class_index=pred_idx)
+        # Generate Grad-CAM visualisation
+        print('Generating Grad-CAM visualisation...')
+        gradcam_viz = grad_cam(model, image_tensor, input_path, predicted_class_index=pred_idx)
+
+        # Generate SHAP visualisation
+        print('Generating SHAP visualisation...')
+        shap_viz = shap(model, image_tensor, input_path, predicted_class_index=pred_idx)
+
+        # Influence Function
+        print('Calculating influence...')
+        dataset, filenames = load_datasets(DATASET_PATH, only_train_dataset_with_filenames=True)
+        influencers = calculate_influence(model, image_tensor, pred_idx, dataset, filenames)
+        print(influencers.head(5))
     except Exception as e:
         print(f"An error occurred during inference: {e}")
 

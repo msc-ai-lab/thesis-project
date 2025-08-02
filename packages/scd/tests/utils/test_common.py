@@ -6,7 +6,7 @@ from torch import nn
 from scd.utils.common import load_datasets, get_test_transforms, load_model
 from scd.utils.constants import INPUT_SIZE_FOR_MODELS
 
-ROOT_DIR = Path(__file__).parent.parent.parent.parent
+ROOT_DIR = Path(__file__).parent.parent.parent.parent.parent
 
 def test_load_datasets_with_wrong_path():
     path = 'wrong/path/to/datasets'

@@ -7,8 +7,6 @@ setup(
   packages=find_packages(include=['scd', 'scd.*']),
   install_requires=[
     'albumentations',
-    'torch',
-    'captum',
     'matplotlib',
     'numpy==1.26.4',
     'Pillow',
