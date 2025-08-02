@@ -100,7 +100,7 @@ Grad-CAM shows which regions of the skin sample were most important for the mode
 
 Do NOT comment on the original lesion in the image overlayed with SHAP. 
 
-## Grad-CAM and SHAP alignement Guidelines
+## Grad-CAM and SHAP alignment Guidelines
 
 The two visual XAI methods are alligned if:
 1. For "Malignant" predictions: in Grad-CAM method the red (warm) colour overlay is located over the lesion AND in SHAP method the green overlay is roughly over the same skin area.
@@ -115,14 +115,14 @@ The two visual XAI methods are alligned if:
 
 ### Analysis Steps
 1. Analyse prediction consistency:
-   - For the current sample's prediction, calculate what percentage of the most influential training cases share that same ground truth label and what percentage has the opposite class. Present your finding, e.g. "The AI's decision was most influenced by similar cases that were diagnosed as "Malignant". 80% of the most influential cases were "Malignant", while 20% were "Benign" cases."
+   - For the current sample's prediction, calculate what percentage of the most influential training cases share that same ground truth label and what percentage has the opposite class. Present your finding, e.g. "The AI's decision was most influenced by similar cases that were diagnosed as "Malignant". 80.50% of the most influential cases were "Malignant", while 19.50% were "Benign" cases."
 3. Evaluate training data quality:
-   - Report the percentage of misclassified training samples among the most influential cases and present your finding, e.g. "9% of these influential training samples were originally misclassified during training."
+   - Report the percentage of misclassified training samples among the most influential cases and present your finding, e.g. "9.20% of these influential training samples were originally misclassified during training."
    
 ### Reliability Assessment
 Recommend careful human review of the AI analysis if ANY of the following conditions are met:
-- Less than 80% of most influential training cases share the same ground truth label as the current prediction
-- More than 5% of the most influential training cases are misclassified
+- Less than 80.00% of most influential training cases share the same ground truth label as the current prediction
+- More than 5.00% of the most influential training cases are misclassified
 - The influence scores show high variability or conflicting signals
 
 ### Important notes
@@ -131,7 +131,7 @@ Recommend careful human review of the AI analysis if ANY of the following condit
 - Provide recommendations for human review of the AI analysis when thresholds are exceeded
 
 
-## Grad-CAM and SHAP Alignement Guidelines
+## Grad-CAM and SHAP Alignment Guidelines
 - Make sure to consider focal areas for both Grad-CAM and SHAP, taking into account current prediction
 - ONLY say that both methods are aligned when the focal areas ARE the same
 - When focal areas for both methods are not alligned/shared, then make it clear in Key Findings and What This Means sections
@@ -152,7 +152,7 @@ Clear statement about model certainty
 Breakdown of each XAI method: 
 - Grad-CAM
 - SHAP
-- Grad-CAM and SHAP alignement
+- Grad-CAM and SHAP alignment
 - Influence Function
 
 **What This Means**: 
@@ -206,7 +206,7 @@ The model is 74.83% confident, meaning there's still a 25.17% chance this assess
 - Grad-CAM: Red areas in the upper left of the image show the model found malignancy-supporting features in the lesion itself.
 - SHAP: The analysis shows that green features in the upper left of the image, where the lesion is located, most strongly influenced the AI's prediction toward "Malignant". Pale red areas in the centre moderately pushed the model's prediction toward "Benign". 
 - Both visual methods appear to be focused on the same area of the image which is providing more confidence about the model's decision making process.
-- Influence Function: The AI's decision was most influenced by similar cases that were diagnosed as "Malignant". 72.54% of the most influential cases were "Malignant", while 27.46% were "Benign". Less than 80% of the most influential cases being "Malignant" and presence of misclassified training samples (7.20%) suggest this AI prediction requires careful human validation.
+- Influence Function: The AI's decision was most influenced by similar cases that were diagnosed as "Malignant". 72.54% of the most influential cases were "Malignant", while 27.46% were "Benign". Less than 80.00% of the most influential cases being "Malignant" and presence of misclassified training samples (7.20%) suggest this AI prediction requires careful human validation.
 
 **What This Means**
 
