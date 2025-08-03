@@ -44,8 +44,9 @@ from pathlib import Path
 
 from scd.preprocess import preprocess_input
 from scd.inference import predict
-from scd.utils.common import load_model, load_datasets
-from xaiLLM.explainer import grad_cam, shap, calculate_influence
+from scd.utils.common import load_model
+from xaiLLM.run import run_xaiLLM
+from xaiLLM.utils.helpers import show_title, show_image
 
 def main():
     try:
@@ -54,7 +55,7 @@ def main():
 
         # Define paths
         ROOT_DIR = Path.cwd()
-        DATASET_PATH = ROOT_DIR / 'data' / 'processed'
+        DATASET_PATH = ROOT_DIR / 'data' / 'processed' / 'train_dataset.pt'
         MODEL_PATH = ROOT_DIR / 'models' / 'ResNet_skin_cancer_classification.pth'
         IMAGE_RESIZE = (384, 384)
 
@@ -69,28 +70,41 @@ def main():
         if not input_path.exists():
             print(f"Error: The file {input_path} does not exist.")
             exit(1)
-
+        
         # Preprocess the input image
         image_tensor = preprocess_input(input_path, resize=IMAGE_RESIZE).to(device)
 
         # Predict the class and get probabilities
         (pred_idx, output), probs = predict(model, image_tensor)
+        show_title('Running Inference...')
         print(f"Inference result: {output}")
-        print(f"Probabilities: {probs}")
+        print(f"Probabilities:")
+        print(f"\tBenign: {probs['Benign'] * 100:.2f}%")
+        print(f"\tMalignant: {probs['Malignant'] * 100:.2f}%")
 
-        # Generate Grad-CAM visualisation
-        print('Generating Grad-CAM visualisation...')
-        gradcam_viz = grad_cam(model, image_tensor, input_path, predicted_class_index=pred_idx)
 
-        # Generate SHAP visualisation
-        print('Generating SHAP visualisation...')
-        shap_viz = shap(model, image_tensor, input_path, predicted_class_index=pred_idx)
+        gradcam_viz, shap_viz, influencers, llm_output = run_xaiLLM(
+            model,
+            image_tensor,
+            input_path,
+            pred_idx,
+            dataset_path=DATASET_PATH,
+            probabilities=probs,
+        )
 
-        # Influence Function
-        print('Calculating influence...')
-        dataset, filenames = load_datasets(DATASET_PATH, only_train_dataset_with_filenames=True)
-        influencers = calculate_influence(model, image_tensor, pred_idx, dataset, filenames)
+        # Show Grad-CAM visualisation
+        show_image(gradcam_viz, title="Grad-CAM Visualisation")
+
+        # Show SHAP visualisation
+        show_image(shap_viz, title="SHAP Visualisation")
+
+        # Show top 5 influencers
+        print("\nTop 5 Influencers:")
         print(influencers.head(5))
+
+        # Print LLM interpretation
+        print("\nLLM Interpretation:")
+        print(llm_output)
     except Exception as e:
         print(f"An error occurred during inference: {e}")
 
