@@ -26,7 +26,7 @@ import tempfile
 import os
 
 # Import the functions to test
-from xaiLLM.explainer import (
+from packages.xaiLLM.xaiLLM.explainer.wrapper import (
     WrapperModel, 
     grad_cam, 
     shap, 
