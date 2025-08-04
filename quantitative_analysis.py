@@ -64,14 +64,13 @@ def run_quantitative_analysis():
             )
 
             # Calculate model influential percentage where model predictions match ground truth
-            model_influential_percentage = round(sum(influencers['ground_truth'] == output) / len(influencers['ground_truth']) * 100, 2)
+            model_influential_percentage = (sum(influencers['ground_truth'] == output) / len(influencers['ground_truth'])) * 100
 
             # Parse the LLM output
             parser = Parser()
             parsed_output = parser.parse(llm_output)
 
-            # Store results
-            results.append({
+            result = {
                 'model_prediction': output,
                 'model_confidence': round(probs[output] * 100, 2),
                 'model_influential_percentage': model_influential_percentage,
@@ -79,8 +78,11 @@ def run_quantitative_analysis():
                 'llm_parsed_borderline': parsed_output['borderline'],
                 'llm_parsed_confidence': parsed_output['confidence'],
                 'llm_parsed_influential_percentage': parsed_output['influential_cases_percentage']
-            })
-        
+            }
+
+            # Store results
+            results.append(result)
+
     except Exception as e:
         print(f"An error occurred during inference: {e}")
 
