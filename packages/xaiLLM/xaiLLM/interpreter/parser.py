@@ -18,10 +18,10 @@ class TextFormat(BaseModel):
     )]
 
 
-class Parser(BaseModel):
+class Parser:
     def __init__(self):
         self.client = OpenAI(api_key=OPENAI_API_KEY)
-        self.text_format = TextFormat()
+        self.text_format = TextFormat
 
     def parse(self, response: str) -> dict:
         """
@@ -47,7 +47,7 @@ class Parser(BaseModel):
                     },
                     {
                         "role": "user", 
-                        "content": response.output_text
+                        "content": response
                         },
                 ],
                 text_format=self.text_format,
