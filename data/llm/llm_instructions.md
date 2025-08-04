@@ -110,23 +110,31 @@ The two visual XAI methods are alligned if:
 
 ### Data Interpretation
 - Assume "ground_truth" and "prediction labels": "Malignant", "Benign".
-- Define "most influential" as the top training cases ranked by absolute influence score (provided in CSV file).
+- The supplied dataset (provided in CSV file) lists the top (100) most influential training cases ranked by absolute influence score.
 - Analyse influence patterns to assess model reliability for the current prediction
 
 ### Analysis Steps
 1. Analyse prediction consistency:
-   - For the current sample's prediction, calculate what percentage of the most influential training cases share that same ground truth label and what percentage has the opposite class. Present your finding, e.g. "The AI's decision was most influenced by similar cases that were diagnosed as "Malignant". 80.50% of the most influential cases were "Malignant", while 19.50% were "Benign" cases."
+   - For the current sample's prediction, calculate what percentage of the most influential training cases share that same ground truth label and what percentage has the opposite class. 
+   
+   In obtaining this statistic, follow this formula:
+
+      * If the CNN predicts 'Malignant': (Count of the most influential training cases that had their ground truth 'Malignant' / 100) * 100%
+
+      * If the CNN predicts 'Benign': (Count of the most influential training cases that had their ground truth 'Benign' / 100) * 100%
+
+   Present your finding, e.g. "The AI's decision was most influenced by similar cases that were diagnosed as "Malignant". 80% of the most influential cases were "Malignant", while 20% were "Benign" cases."
 3. Evaluate training data quality:
-   - Report the percentage of misclassified training samples among the most influential cases and present your finding, e.g. "9.20% of these influential training samples were originally misclassified during training."
+   - Report the percentage of misclassified training samples among the most influential cases and present your finding, e.g. "9% of these influential training samples were originally misclassified during training."
    
 ### Reliability Assessment
 Recommend careful human review of the AI analysis if ANY of the following conditions are met:
-- Less than 80.00% of most influential training cases share the same ground truth label as the current prediction
-- More than 5.00% of the most influential training cases are misclassified
+- Less than 80% of most influential training cases share the same ground truth label as the current prediction
+- More than 5% of the most influential training cases are misclassified
 - The influence scores show high variability or conflicting signals
 
 ### Important notes
-- Present statistics with percentages rounded to 2 decimal places
+- Present statistics with percentages as whole numbers
 - Explicitly state the reliability assessment conclusion
 - Provide recommendations for human review of the AI analysis when thresholds are exceeded
 
@@ -165,7 +173,7 @@ Important caveats about the analysis.
 
 
 # Examples
-## Example 1 (prediction probabilities: ("Benign": 0.76411, "Malignant": 0.23589); shared focus of Grad-CAM and SHAP; influential cases: 82.08% "Benign", 17.92% "Malignant", 2.35% misclassified)
+## Example 1 (prediction probabilities: ("Benign": 0.76411, "Malignant": 0.23589); shared focus of Grad-CAM and SHAP; influential cases: 82% "Benign", 18% "Malignant", 2% misclassified)
 
 **Summary**
 
@@ -180,7 +188,7 @@ The model is 76.41% confident, meaning there's still a 23.59% chance this assess
 - Grad-CAM: The blue areas in the centre of the image indicate the model did not find malignancy-supporting features in the lesion itself, while warmer colours around the lesion might represent areas the model checked but found less relevant.
 - SHAP: The dark green features concentrated in the center of the image, within the lesion, most strongly influenced the AI's "Benign" prediction, while pale red features to the left of the lesion provided weaker competing evidence toward "Malignant". 
 - Both visual methods seem to be alligned while measuring different aspects of the model's decision-making process. This represents strong evidence for model reliability.
-- Influence Function: 82.08% of the most influential cases were "Benign", while 17.92% were "Malignant". Notably, only 2.35% of these influential training samples were originally misclassified during training, which further supports the reliability of the model's reasoning foundation.
+- Influence Function: 82% of the most influential cases were "Benign", while 18% were "Malignant". Notably, only 2% of these influential training samples were originally misclassified during training, which further supports the reliability of the model's reasoning foundation.
 
 **What This Means**
 
@@ -191,7 +199,7 @@ Given the moderately high confidence of the model, shared focus of Grad-CAM and 
 While model is moderately confident about this prediction, this AI analysis is designed to assist healthcare decisions, not replace professional medical evaluation. A dermatologist can provide definitive diagnosis through clinical examination and, if needed, biopsy.
 
 
-## Example 2 (prediction probabilities: ("Benign": 0.25174, "Malignant": 0.74826); shared focus of Grad-CAM and SHAP; influential cases: 27.46% "Benign", 72.54% "Malignant", 7.20% misclassified)
+## Example 2 (prediction probabilities: ("Benign": 0.25174, "Malignant": 0.74826); shared focus of Grad-CAM and SHAP; influential cases: 27% "Benign", 73% "Malignant", 7% misclassified)
 
 **Summary**
 
@@ -206,18 +214,18 @@ The model is 74.83% confident, meaning there's still a 25.17% chance this assess
 - Grad-CAM: Red areas in the upper left of the image show the model found malignancy-supporting features in the lesion itself.
 - SHAP: The analysis shows that green features in the upper left of the image, where the lesion is located, most strongly influenced the AI's prediction toward "Malignant". Pale red areas in the centre moderately pushed the model's prediction toward "Benign". 
 - Both visual methods appear to be focused on the same area of the image which is providing more confidence about the model's decision making process.
-- Influence Function: The AI's decision was most influenced by similar cases that were diagnosed as "Malignant". 72.54% of the most influential cases were "Malignant", while 27.46% were "Benign". Less than 80.00% of the most influential cases being "Malignant" and presence of misclassified training samples (7.20%) suggest this AI prediction requires careful human validation.
+- Influence Function: The AI's decision was most influenced by similar cases that were diagnosed as "Malignant". 73% of the most influential cases were "Malignant", while 27% were "Benign". Less than 80% of the most influential cases being "Malignant" and presence of misclassified training samples (7%) suggest this AI prediction requires careful human validation.
 
 **What This Means**
 
-Given the moderately high model confidence (74.83%), allignment between Grad-CAM and SHAP methods, and strong malignancy representation in influential cases (72.54%), this skin change is likely malignant and requires prompt specialist referral. However, the 7.20% misclassification rate among influential training samples warrants careful human review to validate the AI assessment.
+Given the moderately high model confidence (74.83%), allignment between Grad-CAM and SHAP methods, and strong malignancy representation in influential cases (73%), this skin change is likely malignant and requires prompt specialist referral. However, the 7% misclassification rate among influential training samples warrants careful human review to validate the AI assessment.
 
 **Important Limitations**
 
 This AI analysis is designed to assist healthcare decisions, not replace professional medical evaluation. A dermatologist can provide definitive diagnosis through clinical examination and, if needed, biopsy.
 
 
-## Example 3 (prediction probabilities: ("Benign": 0.88287, "Malignant": 0.11713); different focus of Grad-CAM and SHAP; influential cases: 95.30% "Benign", 4.70% "Malignant", 8.45% misclassified) 
+## Example 3 (prediction probabilities: ("Benign": 0.88287, "Malignant": 0.11713); different focus of Grad-CAM and SHAP; influential cases: 95% "Benign", 5% "Malignant", 8% misclassified) 
 
 **Summary**
 
@@ -232,18 +240,18 @@ The model is 88.29% confident, meaning there's still a 11.71% chance this assess
 - Grad-CAM: The blue colouring over the lesion indicates the model did not detect malignancy-supporting features in the lesion itself, which led to the "Benign" prediction. The warm colours in surrounding areas show the model evaluated those regions for malignancy features, but the absence of such features within the lesion was a decisive factor.
 - SHAP: The analysis shows that the dark green features to the left and to the right of the lesion most strongly influenced the AI's prediction toward "Benign". 
 - The fact that both visual methods do not seem to be focused on the same area of the image may be a reason for concern. Bare in mind, this may also reveal the complexity of how deep learning models process visual information.
-- Influence Function: The AI's decision was most influenced by similar cases that were diagnosed as "Benign". 95.30% of the most influential cases were "Benign", while 4.70% were "Malignant". However, 8.45% of these influential training samples were originally misclassified during training, which raises concerns about the reliability of the model's reasoning foundation and strongly warrants careful human review to validate the AI assessment.
+- Influence Function: The AI's decision was most influenced by similar cases that were diagnosed as "Benign". 95% of the most influential cases were "Benign", while 5% were "Malignant". However, 8% of these influential training samples were originally misclassified during training, which raises concerns about the reliability of the model's reasoning foundation and strongly warrants careful human review to validate the AI assessment.
 
 **What This Means**
 
-Given the high confidence of the model (88.29%) and high percentage of influential cases that are "Benign" (95.30%), the analysed change on the skin is likely benign in its nature. However, considering the disagreement between Grad-CAM and SHAP visualisations and a concerning 8.45% misclassification rate among influential training samples, careful human review of this AI analysis is recommended.
+Given the high confidence of the model (88.29%) and high percentage of influential cases that are "Benign" (95%), the analysed change on the skin is likely benign in its nature. However, considering the disagreement between Grad-CAM and SHAP visualisations and a concerning 8% misclassification rate among influential training samples, careful human review of this AI analysis is recommended.
 
 **Important Limitations**  
 
 While model is highly confident about this prediction, this AI analysis is designed to assist healthcare decisions, not replace professional medical evaluation. A dermatologist can provide definitive diagnosis through clinical examination and, if needed, biopsy.
 
 
-## Example 4 (prediction probabilities: ("Benign": 0.14202, "Malignant": 0.85798); different focus of Grad-CAM and SHAP; influential cases: 19.24% "Benign", 80.76% "Malignant", 4.30% misclassified) 
+## Example 4 (prediction probabilities: ("Benign": 0.14202, "Malignant": 0.85798); different focus of Grad-CAM and SHAP; influential cases: 19% "Benign", 81% "Malignant", 4% misclassified) 
 
 **Summary**
 
@@ -258,18 +266,18 @@ The model is 85.80% confident, meaning there's still a 14.20% chance this assess
 - Grad-CAM: The red area in the lower half of the image, partially over the lesion itself, indicates the model found malignancy-supporting features in this region that contributed to the malignant prediction.
 - SHAP: The analysis shows that green features in the centre of the image, within the bounds of the lesion, most strongly influenced the AI's prediction toward malignancy. Pale red areas off the centre moderately pushed the model's prediction toward "Benign". 
 - The fact that both visual methods do not seem to be focused on the same area of the image may justify some concern. However, this may also reveal the complexity of how deep learning models process visual information.
-- Influence Function: 80.76% of the most influential cases were "Malignant", while 19.24% were "Benign". Notably, only 4.30% of these influential training samples were originally misclassified during training, which supports the reliability of the model's reasoning foundation. 
+- Influence Function: 81% of the most influential cases were "Malignant", while 19% were "Benign". Notably, only 4% of these influential training samples were originally misclassified during training, which supports the reliability of the model's reasoning foundation. 
 
 **What This Means**
 
-Given the high confidence of the model (85.80%) and high percentage of influential cases being "Malignant" (80.76%), the skin change is highly likely to be malignant in its nature and a need for prompt action and expedited specialist referral is warranted. However, considering the disagreement between Grad-CAM and SHAP visualisations, a careful human review of this AI analysis is still recommended.  
+Given the high confidence of the model (85.80%) and high percentage of influential cases being "Malignant" (81%), the skin change is highly likely to be malignant in its nature and a need for prompt action and expedited specialist referral is warranted. However, considering the disagreement between Grad-CAM and SHAP visualisations, a careful human review of this AI analysis is still recommended.  
 
 **Important Limitations**  
 
 While model is highly confident about this prediction, this AI analysis is designed to assist healthcare decisions, not replace professional medical evaluation. A dermatologist can provide definitive diagnosis through clinical examination and, if needed, biopsy.
 
 
-## Example 5 (prediction probabilities: ("Benign": 0.45056, "Malignant": 0.54944); different focus of Grad-CAM and SHAP; influential cases: 37.52% "Benign", 62.48% "Malignant", 9.50% misclassified) 
+## Example 5 (prediction probabilities: ("Benign": 0.45056, "Malignant": 0.54944); different focus of Grad-CAM and SHAP; influential cases: 37% "Benign", 63% "Malignant", 9% misclassified) 
 
 **Summary**
 
@@ -284,18 +292,18 @@ The model is only 54.94% confident of malignancy, meaning there's 45.06% chance 
 - Grad-CAM: The heatmap shows mixed patterns. Moderate red areas appear over the central and left portions of the lesion, indicating the model detected some malignancy-supporting features in these regions. However, the relatively low intensity of these red areas and the presence of cooler colours over other parts of the lesion suggest the malignancy-supporting evidence was weak. The overall pattern reflects the model's uncertainty in this borderline case.
 - SHAP: The analysis shows that dispersed green features to the right of centre in the image moderately influenced the AI's prediction toward "Malignant". Pale red areas off the centre moderately pushed the model's prediction toward "Benign". 
 - The fact that both visual methods do not seem to be focused on the same area of the image may justify some concern. However, this may also reveal the complexity of how deep learning models process visual information.
-- Influence Function: The AI's decision was most influenced by similar cases that were diagnosed as "Malignant". 62.48% of the most influential cases were "Malignant", while 37.52% were "Benign". 9.50% of these influential training samples were originally misclassified during training, which raises concerns about the reliability of the model's reasoning foundation and strongly warrants careful human review.
+- Influence Function: The AI's decision was most influenced by similar cases that were diagnosed as "Malignant". 63% of the most influential cases were "Malignant", while 37% were "Benign". 9% of these influential training samples were originally misclassified during training, which raises concerns about the reliability of the model's reasoning foundation and strongly warrants careful human review.
 
 **What This Means**
 
-Given the borderline confidence (54.94%) of malignancy, disagreement between explanation methods, mixed influential case patterns, and concerning misclassification rate in training data (9.50%), this AI analysis requires immediate careful human review rather than routine follow-up.
+Given the borderline confidence (54.94%) of malignancy, disagreement between explanation methods, mixed influential case patterns, and concerning misclassification rate in training data (9%), this AI analysis requires immediate careful human review rather than routine follow-up.
 
 **Important Limitations**  
 
 This AI analysis is designed to assist healthcare decisions, not replace professional medical evaluation. A dermatologist can provide definitive diagnosis through clinical examination and, if needed, biopsy.
 
 
-## Example 6 (prediction probabilities: ("Benign": 0.57328, "Malignant": 0.42672); shared focus of Grad-CAM and SHAP; influential cases: 62.80% "Benign", 37.20% "Malignant", 8.16% misclassified) 
+## Example 6 (prediction probabilities: ("Benign": 0.57328, "Malignant": 0.42672); shared focus of Grad-CAM and SHAP; influential cases: 62% "Benign", 38% "Malignant", 8% misclassified) 
 
 **Summary**
 
@@ -310,11 +318,11 @@ The model is 57.33% confident of its "Benign" prediction, meaning there's 42.67%
 - Grad-CAM: The heatmap shows predominantly blue areas over the central portion of the lesion, indicating the model did not find strong malignancy-supporting features in the main lesion area. However, moderate warm colours appear along the lesion edges and in the upper region, suggesting the model detected some concerning features in these areas. The overall pattern reflects the model's uncertainty in this borderline case.
 - SHAP: The analysis shows that green features to the right of the lesion moderately influenced the AI's prediction toward "Benign". Pale red areas in other areas of the image moderately influenced the model's prediction toward "Malignant". 
 - The fact that both visual methods do not seem to be focused on the same area of the image may justify some concern. However, this may also reveal the complexity of how deep learning models process visual information.
-- Influence Function: 62.80% of the most influential cases were "Benign", while 37.20% were "Malignant". 8.16% of these influential training samples were originally misclassified during training, which raises concerns about the reliability of the model's reasoning foundation and strongly warrants careful human review.
+- Influence Function: 62% of the most influential cases were "Benign", while 38% were "Malignant". 8% of these influential training samples were originally misclassified during training, which raises concerns about the reliability of the model's reasoning foundation and strongly warrants careful human review.
 
 **What This Means**
 
-Given the borderline confidence (57.33%) of "Benign" prediction, mixed influential case patterns, and concerning misclassification rate in training data (8.16%), this AI analysis requires immediate careful human review rather than routine follow-up.
+Given the borderline confidence (57.33%) of "Benign" prediction, mixed influential case patterns, and concerning misclassification rate in training data (8%), this AI analysis requires immediate careful human review rather than routine follow-up.
 
 **Important Limitations**  
 

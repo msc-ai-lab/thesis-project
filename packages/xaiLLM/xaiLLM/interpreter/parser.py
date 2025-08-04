@@ -13,8 +13,8 @@ class TextFormat(BaseModel):
     confidence: Annotated[float, Field(
         description="Model confidence, as indicated in Confidence Level section, to 2 decimal places."
         )]
-    influential_cases_percentage: Annotated[float, Field(
-        description="Influence Functions: What percentage of the most influential training cases share the same ground truth label as the predicted class. Output float with 2 decimal places."
+    influential_cases_percentage: Annotated[int, Field(
+        description="Influence Functions: What percentage of the most influential training cases share the same ground truth label as the predicted class."
     )]
 
 
