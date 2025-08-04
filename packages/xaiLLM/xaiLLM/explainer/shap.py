@@ -56,6 +56,7 @@ class SHAPExplainer(XaiModel):
         # Create figure and axis with no display
         fig = plt.figure(figsize=(8, 8))
         ax = fig.add_subplot(111)
+        ax.set_title('SHAP Visualisation')
         ax.axis('off')
 
         # Ensure original_image is in correct format [0, 255] uint8
@@ -134,6 +135,7 @@ class SHAPExplainer(XaiModel):
                 sign="all",
                 show_colorbar=True,
                 plt_fig_axis=(fig, ax),
+                title="SHAP Explanation"
             )
 
             # Save to buffer

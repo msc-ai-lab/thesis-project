@@ -60,6 +60,7 @@ class GradCAM(XaiModel):
 
         # Create a composite image for return
         fig, ax = plt.subplots(figsize=(8, 8))
+        ax.set_title('Grad-CAM Visualisation')
         ax.imshow(input_image)
         heatmap_img = ax.imshow(heatmap, cmap='jet', alpha=0.4)
         plt.colorbar(heatmap_img, ax=ax, fraction=0.046, pad=0.04, label='Attribution Intensity')
