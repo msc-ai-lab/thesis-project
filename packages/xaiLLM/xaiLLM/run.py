@@ -7,7 +7,7 @@ from xaiLLM.explainer.shap import SHAPExplainer
 from xaiLLM.explainer.influence_functions import InfluenceFunctions
 from xaiLLM.interpreter.llm_interpreter import LLMInterpreter
 
-def run_xaiLLM(model: nn.Module, image_tensor: torch.Tensor, input_path: str, pred_idx: int, dataset_path: str, probabilities: dict) -> tuple:
+def run_xaiLLM(model: nn.Module, image_tensor: torch.Tensor, input_path: str, pred_idx: int, dataset_path: str, probabilities: dict, show_images: bool = True) -> tuple:
     """
     Run the XAI pipeline to generate explanations and interpretations for a given input image.
 
@@ -25,6 +25,8 @@ def run_xaiLLM(model: nn.Module, image_tensor: torch.Tensor, input_path: str, pr
         The path to the dataset used for influence function calculations.
     probabilities : dict
         The prediction probabilities for the input image.
+    show_images : bool, default=True
+        Whether to display the generated visualisations.
 
     Returns
     -------
@@ -43,13 +45,13 @@ def run_xaiLLM(model: nn.Module, image_tensor: torch.Tensor, input_path: str, pr
 
         # Generate Grad-CAM visualisation
         grad_cam = GradCAM(model)
-        gradcam_viz = grad_cam.generate(image_tensor, image, predicted_class_index=pred_idx, show_image=False)
+        gradcam_viz = grad_cam.generate(image_tensor, image, predicted_class_index=pred_idx, show_image=show_images)
         gradcam_enc = grad_cam.pil_image_to_base64(gradcam_viz)
         input_image_enc = grad_cam.pil_image_to_base64(image)
 
         # Generate SHAP visualisation
         shap = SHAPExplainer(model)
-        shap_viz = shap.generate(image_tensor, image, predicted_class_index=pred_idx, show_image=False)
+        shap_viz = shap.generate(image_tensor, image, predicted_class_index=pred_idx, show_image=show_images)
         shap_enc = shap.pil_image_to_base64(shap_viz)
 
         # Influence Function
