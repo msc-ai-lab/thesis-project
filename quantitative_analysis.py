@@ -79,6 +79,7 @@ def run_quantitative_analysis():
                 'llm_parsed_confidence': parsed_output['confidence'],
                 'llm_parsed_influential_percentage': parsed_output['influential_cases_percentage']
             }
+            print(result)
 
             # Store results
             results.append(result)
