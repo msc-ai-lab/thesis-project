@@ -69,4 +69,4 @@ def predict(model: nn.Module, input_tensor: torch.Tensor):
 
             return (pred_idx, pred), {"Benign": benign_prob, "Malignant": malignant_prob}
     except Exception as e:
-        raise RuntimeError(f"Error during prediction: {str(e)}") from e
+        raise RuntimeError(f"Error during prediction")

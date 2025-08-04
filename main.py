@@ -92,14 +92,9 @@ def main():
             probabilities=probs,
         )
 
-        # Show Grad-CAM visualisation
-        show_image(gradcam_viz, title="Grad-CAM Visualisation")
-
-        # Show SHAP visualisation
-        show_image(shap_viz, title="SHAP Visualisation")
-
         # Show top 5 influencers
         print("\nTop 5 Influencers:")
+        influencers.to_csv(ROOT_DIR / 'results' / 'influencers.csv', index=False)
         print(influencers.head(5))
 
         # Print LLM interpretation

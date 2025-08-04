@@ -91,13 +91,12 @@ def load_model(model_path: str) -> SkinCancerCNN:
             An instance of the SkinCancerCNN model loaded with the pre-trained weights.
     """
     try:
-        if not os.path.exists(model_path):
-            raise FileNotFoundError(f"Model file not found at {model_path}")
-        
         model = SkinCancerCNN(num_classes=2)
         model.load_state_dict(torch.load(model_path))
         model.eval()
         
         return model
+    except FileNotFoundError as e:
+        raise FileNotFoundError(f"Model file not found at {model_path}. Error: {e}")
     except Exception as e:
         raise RuntimeError(f"An error occurred while loading the model from {model_path}: {e}")
