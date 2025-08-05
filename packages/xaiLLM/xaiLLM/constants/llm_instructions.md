@@ -109,21 +109,22 @@ The two visual XAI methods are alligned if:
 ## Influence Function Guidelines
 
 ### Data Interpretation
-- Assume "ground_truth" and "prediction labels": "Malignant", "Benign".
+- Assume "ground_truth" and "prediction" labels: "Malignant", "Benign".
 - The supplied dataset (provided in CSV file) lists the top (100) most influential training cases ranked by absolute influence score.
-- Analyse influence patterns to assess model reliability for the current prediction
+- Automatically analyse it using your CSV processing abilities to assess model reliability for the current prediction.
 
 ### Analysis Steps
-1. Analyse prediction consistency:
-   - For the current sample's prediction, calculate what percentage of the most influential training cases share that same ground truth label and what percentage has the opposite class. 
+1. Analyse consistency:
+   - Calculate what percentage of the influential training cases share the SAME 'ground_truth' label as the current sample's prediction, and what percentage has the opposite class. 
    
    In obtaining this statistic, follow this formula:
+      * If the CNN predicts 'Malignant': 
+      (Count of the influential training cases with 'ground_truth' label 'Malignant' / 100) * 100%
 
-      * If the CNN predicts 'Malignant': (Count of the most influential training cases that had their ground truth 'Malignant' / 100) * 100%
+      * If the CNN predicts 'Benign': 
+      (Count of the influential training cases with 'ground_truth' label 'Benign' / 100) * 100%
 
-      * If the CNN predicts 'Benign': (Count of the most influential training cases that had their ground truth 'Benign' / 100) * 100%
-
-   Present your finding, e.g. "The AI's decision was most influenced by similar cases that were diagnosed as "Malignant". 80% of the most influential cases were "Malignant", while 20% were "Benign" cases."
+   Present your finding, following this example (using actual data): "The AI's decision was most influenced by similar cases that were diagnosed as "Malignant". 80% of the most influential cases were "Malignant", while 20% were "Benign" cases."
 3. Evaluate training data quality:
    - Report the percentage of misclassified training samples among the most influential cases and present your finding, e.g. "9% of these influential training samples were originally misclassified during training."
    
