@@ -23,6 +23,36 @@ class Parser:
         self.client = OpenAI(api_key=OPENAI_API_KEY)
         self.text_format = TextFormat
 
+    # Define custom function for extracting the borderline prediction status
+    def _borderline_parser(self, llm_output : str, key_words: List[str]) -> bool:
+        """
+        Parse the LLM output and search for the key words to confirm if the given prediction 
+        was interpreted as "borderline". 
+        
+        Parameters
+        ----------
+        llm_output : str
+            The original LLM output text that contains the prediction and analysis.
+        
+        Returns
+        -------
+        bool
+            True if the prediction is considered "borderline", False otherwise.
+        """
+
+        key_words = ["borderline", "no clear decision", "uncertain", "indeterminate", "ambiguous", "unclear", "equivocal", "between benign and malignant"]
+
+        # Narrow-down parsing focus if exact heading is present in the LLM output
+        if '**Confidence Level**' in llm_output:
+            start_indx = 0
+            end_indx = llm_output.find("**Confidence Level**")
+            llm_output = llm_output[start_indx : end_indx].lower()
+        else:
+            llm_output.lower()
+            
+        # Check if any key words are in the LLM output
+        return any(word in llm_output for word in key_words)
+
     def parse(self, response: str) -> dict:
         """
         Parse the LLM response to extract structured data.
@@ -56,43 +86,8 @@ class Parser:
 
             extracted_data = extractor.output_parsed.model_dump()
 
-            # Define custom function for extracting the borderline prediction status
-            def borderline_parser(llm_output : str, key_words: List[str]) -> bool:
-                """
-                Parse the LLM output and search for the key words to confirm if the given prediction 
-                was interpreted as "borderline". 
-                
-                Arguments:
-                llm_output (str): original LLM interpretation of XAI methods in the skin cancer prediction
-                key_words (List[str]): key words to match against the LLM output
-                
-                Returns:
-                A bool value for the presence or absence of the "borderline" prediction status.
-                """
-                
-                # Narrow-down parsing focus if exact heading is present in the LLM output
-                if '**Confidence Level**' in llm_output:
-                    start_indx = 0
-                    end_indx = llm_output.find("**Confidence Level**")
-                    llm_output = llm_output[start_indx : end_indx].lower()
-                else:
-                    llm_output.lower()
-                    
-                borderline = False
-                key_words = [word.lower() for word in key_words]
-                
-                # Parse in search of the key words (with lowered case)
-                for word in key_words:
-                    if word in llm_output:
-                        borderline = True
-                        break
-
-                return borderline
-
-            # Implementat the function and update extracted_data with the function's finding
-            key_words = ["borderline", "no clear decision", "uncertain", "indeterminate", "ambiguous", "unclear", "equivocal" "between benign and malignant"]
-            borderline_status = borderline_parser(llm_output=response, 
-                                                key_words=key_words)
+            # Implement the function and update extracted_data with the function's finding
+            borderline_status = self._borderline_parser(llm_output=response)
             extracted_data["borderline"] = borderline_status
 
             return extracted_data
