@@ -24,7 +24,7 @@ class Parser:
         self.text_format = TextFormat
 
     # Define custom function for extracting the borderline prediction status
-    def _borderline_parser(self, llm_output : str, key_words: List[str]) -> bool:
+    def _borderline_parser(self, llm_output : str) -> bool:
         """
         Parse the LLM output and search for the key words to confirm if the given prediction 
         was interpreted as "borderline". 
