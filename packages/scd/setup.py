@@ -8,10 +8,9 @@ setup(
   install_requires=[
     'albumentations',
     'matplotlib',
-    'numpy==1.26.4',
     'Pillow',
     'torch',
     'torchvision',
   ],
-  python_requires='>=3.8',
+  python_requires='>=3.10',
 )

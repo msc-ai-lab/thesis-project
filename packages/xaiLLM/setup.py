@@ -12,10 +12,9 @@ setup(
     'openai',
     'tqdm',
     'Pillow',
-    'numpy',
     'pandas',
     'dotenv',
     'scikit-learn',
   ],
-  python_requires='>=3.8',
+  python_requires='>=3.10',
 )
