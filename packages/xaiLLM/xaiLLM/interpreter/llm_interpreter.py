@@ -12,37 +12,30 @@ class LLMInterpreter:
 
         with importlib.resources.open_text('xaiLLM.constants', 'llm_instructions.md', encoding='utf-8') as f:
             self.instructions = f.read()
+    
+    
+    def inference(self, probabilities: dict, influence_stats: tuple, xai_gradcam_enc: str, xai_shap_enc: str, input_image_enc: str) -> str:
+        """
+        Generate an interpretation of the model's prediction using an LLM.
 
-    def influence_functions_stats(self, probs, influencers):
+        Parameters
+        ----------
+        probabilities : dict
+            The prediction probabilities for the input image.
+        influence_stats : tuple
+            A tuple containing statistics about the influence functions.
+        xai_gradcam_enc : str
+            Base64-encoded Grad-CAM visualisation.
+        xai_shap_enc : str
+            Base64-encoded SHAP visualisation.
+        input_image_enc : str
+            Base64-encoded original input image.
         
-        # Establish the CNN-predicted class
-        sample_probs = pd.read_csv(probs)
-        predicted_class = str(sample_probs.loc[sample_probs['confidence'].idxmax(), 'class'])
-
-        # Read in the influence functions data
-        influence_data = pd.read_csv(influencers)
-
-        # Filter for influential training cases that share ground truth with predicted class
-        alligned_groundtruth = influence_data[influence_data['ground_truth'] == predicted_class]
-
-        # Set default values
-        groundtruth_alignment_percentage, groundtruth_misalignment_percentage, misclassified_percentage = 0, 100, None
-
-        # Check for the count of alligned cases
-        if len(alligned_groundtruth) > 0:
-            # Calculate the percentage of influential training cases that share ground truth with predicted class
-            groundtruth_alignment_percentage = (len(alligned_groundtruth) / len(influence_data['ground_truth'])) * 100
-
-            # Calculate the percentage of the aligned cases that were misclassified during training
-            misclassified_percentage = round((len(alligned_groundtruth[alligned_groundtruth["ground_truth"] != alligned_groundtruth["prediction"]]) / len(alligned_groundtruth)) * 100, 2)
-
-        # Calculate the percentage of influential training cases whose ground truth does NOT match the predicted class
-        groundtruth_misalignment_percentage = 100 - groundtruth_alignment_percentage
-
-        return groundtruth_alignment_percentage, groundtruth_misalignment_percentage, misclassified_percentage
-    
-    
-    def inference(self, probs, influence_stats, xai_gradcam_enc, xai_shap_enc, input_image_enc):
+        Returns
+        -------
+        str
+            The LLM interpretation output.
+        """
         try:
             response = self.client.responses.create(
                 model="gpt-4.1-2025-04-14",
@@ -56,7 +49,7 @@ class LLMInterpreter:
                         "content": [
                             { 
                                 "type": "input_text",
-                                "text": str(probs)}, # prediction probabilities
+                                "text": str(probabilities)}, # prediction probabilities
                             { 
                                 "type": "input_text",
                                 "text": str(influence_stats)}, # influence function statistics
