@@ -82,8 +82,7 @@ def main():
         print(f"\tBenign: {probs['Benign'] * 100:.2f}%")
         print(f"\tMalignant: {probs['Malignant'] * 100:.2f}%")
 
-
-        gradcam_viz, shap_viz, influencers, llm_output = run_xaiLLM(
+        _, _, influencers, llm_output = run_xaiLLM(
             model,
             image_tensor,
             input_path,

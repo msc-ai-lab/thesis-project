@@ -2,6 +2,8 @@ from pathlib import Path
 from openai import OpenAI, APIError, APIConnectionError, RateLimitError
 from xaiLLM.utils.config import OPENAI_API_KEY
 import importlib.resources
+import pandas as pd
+import numpy as np
 
 
 class LLMInterpreter:
@@ -10,8 +12,30 @@ class LLMInterpreter:
 
         with importlib.resources.open_text('xaiLLM.constants', 'llm_instructions.md', encoding='utf-8') as f:
             self.instructions = f.read()
+    
+    
+    def inference(self, probabilities: dict, influence_stats: tuple, xai_gradcam_enc: str, xai_shap_enc: str, input_image_enc: str) -> str:
+        """
+        Generate an interpretation of the model's prediction using an LLM.
 
-    def inference(self, probs, influencers, xai_gradcam_enc, xai_shap_enc, input_image_enc):
+        Parameters
+        ----------
+        probabilities : dict
+            The prediction probabilities for the input image.
+        influence_stats : tuple
+            A tuple containing statistics about the influence functions.
+        xai_gradcam_enc : str
+            Base64-encoded Grad-CAM visualisation.
+        xai_shap_enc : str
+            Base64-encoded SHAP visualisation.
+        input_image_enc : str
+            Base64-encoded original input image.
+        
+        Returns
+        -------
+        str
+            The LLM interpretation output.
+        """
         try:
             response = self.client.responses.create(
                 model="gpt-4.1-2025-04-14",
@@ -25,10 +49,10 @@ class LLMInterpreter:
                         "content": [
                             { 
                                 "type": "input_text",
-                                "text": str(probs) }, # prediction probabilities
+                                "text": str(probabilities)}, # prediction probabilities
                             { 
                                 "type": "input_text",
-                                "text": influencers }, # influence function output
+                                "text": str(influence_stats)}, # influence function statistics
                                 
                             {
                                 "type": "input_image",

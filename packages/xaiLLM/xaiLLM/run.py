@@ -57,12 +57,13 @@ def run_xaiLLM(model: nn.Module, image_tensor: torch.Tensor, input_path: str, pr
         # Influence Function
         dataset, filenames = load_datasets(dataset_path)
         influence_functions = InfluenceFunctions(model, dataset, filenames)
-        influencers = influence_functions.generate(image_tensor, pred_idx)
+        influencers, influence_stats = influence_functions.generate(image_tensor, pred_idx)
 
         interpreter = LLMInterpreter()
+
         llm_output = interpreter.inference(
-            probs=probabilities,
-            influencers=influencers.to_json(),
+            probabilities=probabilities,
+            influence_stats=influence_stats,
             xai_gradcam_enc=gradcam_enc,
             xai_shap_enc=shap_enc,
             input_image_enc=input_image_enc
