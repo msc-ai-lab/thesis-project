@@ -5,15 +5,16 @@ from xaiLLM.utils.config import OPENAI_API_KEY
 
 class TextFormat(BaseModel):
     prediction: Literal['Benign', 'Malignant'] = Field(
-        description="'Benign' for when the AI analysis suggests low or moderately low concern for malignancy; 'Malignant' for when the AI analysis indicates high or moderately high concern for malignancy."
+        description="'Benign' for when the AI analysis suggests low or moderately low concern for malignancy; 'Malignant' for when the AI analysis indicates high or moderately high concern for malignancy. " \
+        "For borderline predictions, extract the class that is mentioned in the Confidence Level section."
         )
 
     confidence: Annotated[float, Field(
-        description="Model confidence, as indicated in Confidence Level section, to 2 decimal places."
+        description="Model confidence, as indicated in the Confidence Level section. 2 decimal places."
         )]
     influential_cases_percentage: Annotated[int, Field(
-        description="Influence Functions: Percentage of the most influential training cases that were diagnosed with the same class as the class predicted by the model."
-    )]
+        description="Influence Functions: Percentage of the most influential training cases that were diagnosed with the same class as the class predicted by the model." \
+        "For borderline predictions, the class predicted by the model is indicated in the Confidence Level section."
 
 
 class Parser:
@@ -38,7 +39,7 @@ class Parser:
             True if the prediction is considered "borderline", False otherwise.
         """
 
-        key_words = ["borderline", "no clear decision", "uncertain", "indeterminate", "ambiguous", "unclear", "equivocal", "between benign and malignant"]
+        key_words = ["borderline"]
 
         # Narrow-down parsing focus if exact heading is present in the LLM output
         if '**Confidence Level**' in llm_output:
@@ -46,7 +47,7 @@ class Parser:
             end_indx = llm_output.find("**Confidence Level**")
             llm_output = llm_output[start_indx : end_indx].lower()
         else:
-            llm_output.lower()
+            llm_output = llm_output.lower()
             
         # Check if any key words are in the LLM output
         return any(word in llm_output for word in key_words)
