@@ -120,7 +120,6 @@ class InfluenceFunctions(XaiModel):
 
         # Filter for influential training cases that share ground truth with predicted class
         aligned_groundtruth = influencers[influencers['ground_truth'] == predicted_class]
-        print(len(aligned_groundtruth))
 
         # Set default values
         groundtruth_alignment_percentage, groundtruth_misalignment_percentage, misclassified_percentage = 0, 100, 0

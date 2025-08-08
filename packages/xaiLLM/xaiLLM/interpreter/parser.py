@@ -7,14 +7,12 @@ class TextFormat(BaseModel):
     prediction: Literal['Benign', 'Malignant'] = Field(
         description="'Benign' for when the AI analysis suggests low or moderately low concern for malignancy; 'Malignant' for when the AI analysis indicates high or moderately high concern for malignancy."
         )
-    # borderline: Literal[True, False] = Field(
-    #     description="True if the model considers this to be a borderline case, False otherwise. Must be exactly True or False."
-    # )
+
     confidence: Annotated[float, Field(
         description="Model confidence, as indicated in Confidence Level section, to 2 decimal places."
         )]
     influential_cases_percentage: Annotated[int, Field(
-        description="Influence Functions: What percentage of the most influential training cases share the same ground truth label as the predicted class."
+        description="Influence Functions: Percentage of the most influential training cases that were diagnosed with the same class as the class predicted by the model."
     )]
 
 
