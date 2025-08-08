@@ -15,7 +15,7 @@ class TextFormat(BaseModel):
     influential_cases_percentage: Annotated[int, Field(
         description="Influence Functions: Percentage of the most influential training cases that were diagnosed with the same class as the class predicted by the model." \
         "For borderline predictions, the class predicted by the model is indicated in the Confidence Level section."
-
+        )]
 
 class Parser:
     def __init__(self):
