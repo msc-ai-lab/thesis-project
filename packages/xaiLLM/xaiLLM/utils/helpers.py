@@ -1,3 +1,10 @@
+"""
+Utility helpers for xaiLLM.
+
+Includes tensor/image utilities, dataset loading, and simple display helpers
+used by the main pipeline.
+"""
+
 import torch
 from torch.utils.data import TensorDataset
 from PIL import Image
@@ -74,6 +81,16 @@ def load_datasets(dataset_path: str) -> tuple:
 
 
 def show_image(image: Image, title: str) -> None:
+    """
+    Show an image with a title.
+
+    Parameters
+    ----------
+    image : Image
+        The image to display.
+    title : str
+        The title to display above the image.
+    """
     plt.figure(figsize=(10, 8))
     plt.imshow(image)
     plt.axis('off')

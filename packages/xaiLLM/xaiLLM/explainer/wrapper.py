@@ -1,3 +1,13 @@
+"""
+Model wrapper helpers.
+
+Wraps model outputs to a consistent logits interface for Captum-based
+attribution methods when models return tuples.
+
+Key class:
+- WrapperModel(model): get_logits(input_tensor) -> torch.Tensor
+"""
+
 import torch
 from torch import nn
 

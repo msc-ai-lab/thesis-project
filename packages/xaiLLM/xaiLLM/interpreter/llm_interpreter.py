@@ -1,3 +1,10 @@
+"""
+LLM interpretation orchestration.
+
+Builds the prompt with instructions and evidence (visualisations and stats)
+and calls the OpenAI Responses API to obtain a narrative interpretation.
+"""
+
 from pathlib import Path
 from openai import OpenAI, APIError, APIConnectionError, RateLimitError
 from xaiLLM.utils.config import OPENAI_API_KEY

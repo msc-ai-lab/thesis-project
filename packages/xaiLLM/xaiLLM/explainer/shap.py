@@ -1,3 +1,13 @@
+"""
+SHAP-like occlusion-based explanations and visualisation utilities.
+
+Provides SHAPExplainer using Captum's Occlusion to approximate attributions
+and custom rendering to a PIL image without interactive display.
+
+Key class:
+- SHAPExplainer(model): generate(input_tensor, input_image, predicted_class_index, show_image=False)
+"""
+
 import io
 import numpy as np
 from PIL import Image
@@ -18,8 +28,10 @@ class SHAPExplainer(XaiModel):
         """
         Initialize the SHAP explainer with a PyTorch model.
         
-        Args:
-            model (nn.Module): The PyTorch model to be explained.
+        Parameters
+        ----------
+        model : nn.Module
+            The PyTorch model to be explained.
         """
         super().__init__(model)
 

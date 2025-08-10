@@ -92,7 +92,7 @@ def load_model(model_path: str) -> SkinCancerCNN:
     """
     try:
         model = SkinCancerCNN(num_classes=2)
-        model.load_state_dict(torch.load(model_path))
+        model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
         model.eval()
         
         return model

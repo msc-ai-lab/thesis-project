@@ -1,3 +1,10 @@
+"""
+Abstract base class for explainers.
+
+Defines the common interface and helpers shared by GradCAM, SHAPExplainer,
+and InfluenceFunctions, including a base64 image encoder.
+"""
+
 import io
 import torch
 from torch import nn

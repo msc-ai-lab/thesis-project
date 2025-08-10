@@ -1,3 +1,13 @@
+"""
+Grad-CAM visual explanation utilities.
+
+Provides the GradCAM class to compute and render class-discriminative
+localisation maps for CNNs using Captum's LayerGradCam.
+
+Key class:
+- GradCAM(model): generate(input_tensor, input_image, predicted_class_index, show_image=True)
+"""
+
 import torch
 from PIL import Image
 import io

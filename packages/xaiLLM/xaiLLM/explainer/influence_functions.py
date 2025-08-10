@@ -1,3 +1,14 @@
+"""
+Influence function approximations for image classification.
+
+Implements a gradient-similarity approach to estimate which training
+examples most influence a given test prediction.
+
+Key class:
+- InfluenceFunctions(model, training_dataset, filenames):
+    generate(test_tensor, predicted_class_index) -> (influencers, stats)
+"""
+
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
@@ -15,9 +26,15 @@ class InfluenceFunctions(XaiModel):
     def __init__(self, model: nn.Module, training_dataset: Dataset, filenames: list):
         """
         Initialize the Influence Functions explainer with a PyTorch model.
-        
-        Args:
-            model (nn.Module): The PyTorch model to be explained.
+
+        Parameters
+        ----------
+            model : nn.Module
+                The PyTorch model to be explained.
+            training_dataset : Dataset
+                The training dataset used for influence function calculations.
+            filenames : list
+                The list of filenames corresponding to the training dataset.
         """
         super().__init__(model)
         self.training_dataset = training_dataset

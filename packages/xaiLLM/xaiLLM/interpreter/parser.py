@@ -1,3 +1,10 @@
+"""
+Parse LLM outputs into structured fields.
+
+Provides a Pydantic schema (TextFormat) and a Parser that extracts
+prediction, confidence, influential percentage, and a borderline flag.
+"""
+
 from openai import OpenAI, APIError, APIConnectionError, RateLimitError
 from pydantic import BaseModel, Field
 from typing import Literal, Annotated, List

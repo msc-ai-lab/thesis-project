@@ -1,3 +1,15 @@
+"""
+Run the xaiLLM pipeline.
+
+This module orchestrates the eXplainable AI workflow for a single image:
+- Generate Grad-CAM and SHAP visualisations
+- Compute training example influence scores
+- Request an LLM interpretation that summarises the evidence
+
+Entry point:
+- run_xaiLLM(model, image_tensor, input_path, pred_idx, dataset_path, probabilities, show_images=True)
+"""
+
 import torch
 from torch import nn
 from PIL import Image

@@ -1,3 +1,9 @@
+"""
+Configuration for xaiLLM.
+
+Loads environment variables (e.g., OPENAI_API_KEY) used across the package.
+"""
+
 import os
 from dotenv import load_dotenv
 
