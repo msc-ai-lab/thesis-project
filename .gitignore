@@ -19,6 +19,7 @@ datasets/*.pkl
 data/raw_dataset/*
 data/processed_dataset/*
 data/augmented_images
+data/quantitative_analysis_images
 
 # Ignore compiled Python files
 src/**/*.pyc
@@ -105,4 +106,3 @@ user_inputs/**/.ipynb_checkpoints/
 
 # Ignore LLM output
 results/xai_output/llm_output.txt
-

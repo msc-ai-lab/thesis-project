@@ -1,0 +1,31 @@
+services:
+  # The Python Backend Service
+  backend:
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
+    container_name: thesis-backend
+    environment:
+      - IS_DOCKER=true
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/app:/app/app
+      - ./packages:/app/packages
+      - ./models:/app/models
+      - ./data:/app/data
+      - ./results:/app/results
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload --timeout-keep-alive 1200
+
+  # The React Frontend Service
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: thesis-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
