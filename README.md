@@ -257,8 +257,6 @@ thesis-project/
 
 ---
 
-**Next Steps:** Use the [API Documentation](http://localhost:8000/docs) to explore endpoints and refer to the User Guide for application workflow.
-
 ## 🤝 Contributors
 ### LAB:
 - 👤 Lukasz
