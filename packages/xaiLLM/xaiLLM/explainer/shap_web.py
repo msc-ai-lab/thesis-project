@@ -1,3 +1,6 @@
+import matplotlib
+matplotlib.use('Agg')
+
 import io
 import numpy as np
 from PIL import Image
