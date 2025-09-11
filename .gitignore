@@ -18,6 +18,7 @@ datasets/*.npz
 datasets/*.pkl
 data/raw_dataset/*
 data/processed_dataset/*
+data/augmented_images
 
 # Ignore compiled Python files
 src/**/*.pyc
@@ -87,6 +88,21 @@ data/raw_dataset/
 
 # Wandb files
 notebooks/wandb
+wandb/
 
 # Ignore XAI checkpoints
 results/**/.ipynb_checkpoints/
+
+# virtual environment directories
+thesis-env/
+
+# Ignore user_input files
+user_inputs/**/.ipynb_checkpoints/
+
+# package cache directories
+*.egg-info/
+.coverage
+
+# Ignore LLM output
+results/xai_output/llm_output.txt
+
